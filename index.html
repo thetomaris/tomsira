@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Tom Sira</title>
-<meta name="description" content="Tom Sira — ambient and tech house from a multi-instrumentalist and producer. Vinyl sets with his own sound system for private evenings, vernissages, pop-ups, car meets and the beach.">
+<meta name="description" content="Tom Sira — ambient and tech house from a multi-instrumentalist and producer. Vinyl sets with his own sound system for private evenings, vernissages, pop-ups and car meets.">
 <!-- Vorschau-Phase: nicht in Suchmaschinen, bis Domain, Impressum und Datenschutz stehen -->
 <meta name="robots" content="noindex">
 <meta property="og:title" content="Tom Sira">
@@ -262,15 +262,19 @@
     background-size: 240px 240px;
     animation: grain 0.6s steps(1) infinite;
   }
-  .set__play {
-    position: absolute; left: 50%; top: 50%; z-index: 2; transform: translate(-50%, -50%);
-    display: inline-flex; align-items: center; gap: 12px;
-    padding: 14px 20px; border: 1px solid rgba(255,255,255,.7); color: #fff;
-    background: rgba(0,0,0,.25);
-    transition: background-color .2s ease, border-color .2s ease;
+  /* Play: nur eine Textzeile unten links, wie die Links im Rest der Seite; Dauer unten rechts */
+  .set__play, .set__dur {
+    position: absolute; bottom: 14px; z-index: 2;
+    font-size: 11px; letter-spacing: .14em; color: #fff;
   }
-  .set__play svg { width: 11px; height: 11px; fill: currentColor; }
-  .set__poster:hover .set__play, .set__poster:focus-visible .set__play { background: rgba(0,0,0,.5); border-color: #fff; }
+  .set__play {
+    left: 16px; display: inline-flex; align-items: center; gap: 9px;
+    padding-bottom: 3px; border-bottom: 1px solid rgba(255,255,255,.55);
+    transition: border-color .2s ease;
+  }
+  .set__play svg { width: 7px; height: 8px; fill: currentColor; }
+  .set__dur { right: 16px; color: rgba(255,255,255,.65); font-variant-numeric: tabular-nums; }
+  .set__poster:hover .set__play, .set__poster:focus-visible .set__play { border-color: #fff; }
   .set__poster:hover img { filter: url(#photo) brightness(.95); }
   .set__poster:focus-visible { outline: 1px solid var(--fg); outline-offset: 3px; }
   .set__cap { display: grid; grid-template-columns: 56px minmax(0, 1fr) auto; gap: 16px; align-items: baseline; padding: 13px 0; border-bottom: 1px solid var(--line); }
@@ -369,7 +373,7 @@
   }
   /* Set im Booking-Raum: kompakt, Breite der linken Spalte */
   .set--compact { margin: -8px 0 36px; max-width: 520px; }
-  .set--compact .set__play { padding: 11px 16px; }
+
   .set__note { margin-top: 10px; color: var(--mute); }
 
   /* Wandschild wie in einer Ausstellung */
@@ -625,7 +629,8 @@
         <button class="set__poster" id="setPoster" type="button" aria-label="Play set: Maison d'Oô, Lagrasse">
           <img src="img/fenster.jpg" alt="">
           <span class="set__grain" aria-hidden="true"></span>
-          <span class="set__play"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 1.5v13l11-6.5z"/></svg>Play set</span>
+          <span class="set__play"><svg viewBox="0 0 7 8" aria-hidden="true"><path d="M0 0v8l7-4z"/></svg>Play</span>
+          <span class="set__dur" aria-hidden="true">28:11</span>
         </button>
       </div>
       <figcaption class="set__cap">
@@ -646,7 +651,7 @@
     <div class="booking__inner">
       <header class="booking__head">
         <h2>Booking</h2>
-        <span>Private · Vernissage · Pop-up · Car meets · Beach</span>
+        <span>Private · Vernissage · Pop-up · Car meets</span>
       </header>
       <div class="booking__grid">
         <div>
@@ -656,7 +661,8 @@
               <button class="set__poster" type="button" aria-label="Play set: Maison d'Oô, Lagrasse">
                 <img src="img/fenster.jpg" alt="" loading="lazy">
                 <span class="set__grain" aria-hidden="true"></span>
-                <span class="set__play"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 1.5v13l11-6.5z"/></svg>Play set</span>
+                <span class="set__play"><svg viewBox="0 0 7 8" aria-hidden="true"><path d="M0 0v8l7-4z"/></svg>Play</span>
+          <span class="set__dur" aria-hidden="true">28:11</span>
               </button>
             </div>
             <figcaption class="set__note">Maison d'Oô, Lagrasse — home vinyl set, 28 min</figcaption>
@@ -678,7 +684,7 @@
           <div class="field"><label for="f-mail">Email</label><input id="f-mail" name="email" type="email" autocomplete="email" required><span class="field__err" aria-live="polite"></span></div>
           <div class="field field--wide"><label for="f-type">Occasion</label>
             <select id="f-type" name="occasion">
-              <option>Private evening</option><option>Vernissage / opening</option><option>Pop-up dinner</option><option>Car meet / drive</option><option>Coffee &amp; craft event</option><option>Beach</option><option>Something else</option>
+              <option>Private evening</option><option>Vernissage / opening</option><option>Pop-up dinner</option><option>Car meet / drive</option><option>Coffee &amp; craft event</option><option>Something else</option>
             </select><span class="field__err"></span></div>
           <div class="field"><label for="f-city">City</label><input id="f-city" name="city" required><span class="field__err" aria-live="polite"></span></div>
           <div class="field"><label for="f-date">Date</label><input id="f-date" name="date" type="date" required><span class="field__err" aria-live="polite"></span></div>
