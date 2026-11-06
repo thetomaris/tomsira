@@ -759,7 +759,7 @@
       </header>
       <div class="booking__grid">
         <div>
-          <p class="booking__intro">Every track in the catalogue is available on vinyl, made to order and in small numbers. Choose the pieces you would like to keep; format and price follow by mail.</p>
+          <p class="booking__intro">Every track in the catalogue is available on vinyl, made to order and in small numbers. Choose the pieces you would like to keep. Format and price follow by mail; payment is by PayPal.</p>
           <a class="booking__mail" data-mail href="#"></a>
         </div>
 
@@ -767,6 +767,10 @@
           <fieldset class="picks"><legend>Tracks</legend><div id="vinylPicks"></div><span class="field__err" id="vinylErr" aria-live="polite"></span></fieldset>
           <div class="field"><label for="v-name">Name</label><input id="v-name" name="name" autocomplete="name" required><span class="field__err" aria-live="polite"></span></div>
           <div class="field"><label for="v-mail">Email</label><input id="v-mail" name="email" type="email" autocomplete="email" required><span class="field__err" aria-live="polite"></span></div>
+          <div class="field field--wide"><label for="v-street">Street and number</label><input id="v-street" name="street" autocomplete="shipping address-line1" required><span class="field__err" aria-live="polite"></span></div>
+          <div class="field"><label for="v-zip">Postcode</label><input id="v-zip" name="postcode" autocomplete="shipping postal-code" required><span class="field__err" aria-live="polite"></span></div>
+          <div class="field"><label for="v-city">City</label><input id="v-city" name="city" autocomplete="shipping address-level2" required><span class="field__err" aria-live="polite"></span></div>
+          <div class="field field--wide"><label for="v-country">Country</label><input id="v-country" name="country" autocomplete="shipping country-name" value="Germany" required><span class="field__err" aria-live="polite"></span></div>
           <div class="field field--wide"><label for="v-msg">Message</label><textarea id="v-msg" name="message" placeholder="Quantity, a dedication, anything else."></textarea><span class="field__err"></span></div>
           <div class="form__foot">
             <button class="form__send" type="submit">Request vinyl</button>
@@ -976,7 +980,10 @@
       if (!tracks.length) { picks.querySelector("input").focus(); return; }
       if (!fieldsOk) { inputs.find(i => i.closest(".field").classList.contains("is-invalid")).focus(); return; }
       const d = Object.fromEntries(new FormData(vForm));
-      const body = ["Tracks:", ...tracks.map(t => `– ${t}`), "", `Name: ${d.name}`, `Email: ${d.email}`, "", d.message || ""].join("\n");
+      const body = ["Tracks:", ...tracks.map(t => `– ${t}`), "",
+        `Name: ${d.name}`, `Email: ${d.email}`, "",
+        "Shipping address:", d.name, d.street, `${d.postcode} ${d.city}`, d.country, "",
+        d.message || ""].join("\n");
       sendMail(vForm, `Vinyl request — ${tracks.length === 1 ? tracks[0] : tracks.length + " tracks"}`, body);
     });
 
