@@ -830,9 +830,8 @@
         <p class="booking__intro" id="thanksText">A personal reply follows by mail.</p>
         <figure class="placard" aria-label="Your request">
           <p class="placard__artist">Tom Sira</p>
-          <p class="placard__title"><em id="thanksKind">Request</em></p>
           <p id="thanksWhat"></p>
-          <p class="placard__meta" id="thanksDate"></p>
+          <p class="placard__meta"><span id="thanksDate"></span><br>Reply within 48 hours</p>
         </figure>
         <button type="button" class="thanks__back" data-leave>Back to the music</button>
       </div>
@@ -1055,8 +1054,7 @@
       }
     }
     const longDate = v => new Date(typeof v === "string" ? v + "T12:00" : v).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" });
-    function showThanks({ kind, text, what }) {
-      document.getElementById("thanksKind").textContent = kind;
+    function showThanks({ text, what }) {
       document.getElementById("thanksText").textContent = text;
       document.getElementById("thanksWhat").textContent = what;
       document.getElementById("thanksDate").textContent = `Received ${longDate(Date.now())}`;
@@ -1088,7 +1086,6 @@
         "", d.message || ""
       ].join("\n");
       submitForm(form, subject, body, {
-        kind: "Booking request",
         text: "A personal reply follows by mail.",
         what: `${d.occasion} · ${d.city} · ${longDate(d.date)}`
       });
@@ -1119,7 +1116,6 @@
         "Shipping address:", d.name, d.street, `${d.postcode} ${d.city}`, d.country, "",
         d.message || ""].join("\n");
       submitForm(vForm, `Vinyl request — ${tracks.length === 1 ? tracks[0] : tracks.length + " tracks"}`, body, {
-        kind: "Vinyl request",
         text: "A personal reply follows by mail, with format, price and PayPal details.",
         what: tracks.map(t => t.slice(4)).join(", ")
       });
