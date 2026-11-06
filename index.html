@@ -4,11 +4,11 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Tom Sira</title>
-<meta name="description" content="Tom Sira — ambient and tech house from a multi-instrumentalist and producer. Vinyl sets with his own sound system for private evenings, vernissages, pop-ups and car meets.">
+<meta name="description" content="Tom Sira — ambient and tech house from a self-taught multi-instrumentalist and producer. Sets for private evenings, vernissages, pop-ups and car meets.">
 <!-- Vorschau-Phase: nicht in Suchmaschinen, bis Domain, Impressum und Datenschutz stehen -->
 <meta name="robots" content="noindex">
 <meta property="og:title" content="Tom Sira">
-<meta property="og:description" content="Ambient and tech house. Vinyl, own sound system.">
+<meta property="og:description" content="Ambient and tech house. Mostly from vinyl.">
 <meta name="theme-color" content="#000000">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='15' fill='%23111'/%3E%3Ccircle cx='16' cy='16' r='6' fill='%23c8161d'/%3E%3Ccircle cx='16' cy='16' r='1.4' fill='%23000'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -431,6 +431,11 @@
     .form__foot { flex-direction: column; align-items: stretch; }
   }
 
+  /* Vinyl auf Anfrage: eine schlichte Zeile unter den Tracks */
+  .cat__vinyl { margin: 18px 0 0; }
+  .cat__vinyl a { border-bottom: 1px solid #3a3936; padding-bottom: 3px; }
+  .cat__vinyl a:hover { color: #fff; border-color: var(--fg); }
+
   .foot { display: flex; justify-content: space-between; margin-top: 28px; color: var(--mute); }
 
   /* ---------- Player: Lackfarbe wechselt pro Track ---------- */
@@ -621,6 +626,7 @@
   </section>
 
   <div class="cat" id="cat"></div>
+  <p class="cat__vinyl"><a id="vinylLink" href="#">Tracks on vinyl — on request</a></p>
 
   <section class="sets" id="sets" aria-labelledby="sets-title">
     <div class="sets__head"><span id="sets-title">Sets</span><span>Vinyl · Recorded on location</span></div>
@@ -655,7 +661,7 @@
       </header>
       <div class="booking__grid">
         <div>
-          <p class="booking__intro">Ambient and tech house from a multi-instrumentalist and producer. Trained in harmony, drawn to simplicity and atmosphere. Brings his own sound system and sets up almost anywhere. Vinyl on request.</p>
+          <p class="booking__intro">Ambient and tech house from a self-taught multi-instrumentalist and producer. Deep in harmony, drawn to simplicity and atmosphere. Mostly from vinyl.</p>
           <figure class="set set--compact">
             <div class="set__frame">
               <button class="set__poster" type="button" aria-label="Play set: Maison d'Oô, Lagrasse">
@@ -672,7 +678,7 @@
           <figure class="placard" aria-label="Details">
             <p class="placard__artist">Tom Sira</p>
             <p class="placard__title"><em>Listening Room</em>, 2026</p>
-            <p>Ambient and tech house sets.<br>Mobile sound system, vinyl, digital files.</p>
+            <p>Ambient and tech house sets.<br>Vinyl and digital.</p>
             <p class="placard__meta">Duration variable<br>Dimensions variable</p>
           </figure>
 
@@ -690,7 +696,7 @@
           <div class="field"><label for="f-date">Date</label><input id="f-date" name="date" type="date" required><span class="field__err" aria-live="polite"></span></div>
           <div class="field field--wide"><label for="f-sound">Sound</label>
             <select id="f-sound" name="sound">
-              <option>Bring the mobile setup</option><option>There is a sound system on site</option><option>Not sure yet</option>
+              <option>Sound system on site</option><option>Need a sound system</option><option>Not sure yet</option>
             </select><span class="field__err"></span></div>
           <div class="field field--wide"><label for="f-msg">Message</label><textarea id="f-msg" name="message" placeholder="The room, the guests, the mood."></textarea><span class="field__err"></span></div>
           <div class="form__foot">
@@ -709,7 +715,7 @@
         <span class="portrait__grain" aria-hidden="true"></span>
       </figure>
       <div>
-        <p class="about__text">Tom Sira is a multi-instrumentalist and producer with a soft spot for analog production. Years of composing and complex jazz reharmonisation taught him harmony inside out, and to find the beauty in simplicity. His sets move between ambient and tech house, mostly from vinyl.</p>
+        <p class="about__text">Tom Sira is a self-taught multi-instrumentalist. He learned everything on the drums first, then moved into production, with a soft spot for analog gear. Years of composing and complex jazz reharmonisation taught him harmony inside out, and to find the beauty in simplicity. His sets move between ambient and tech house, mostly from vinyl.</p>
         <a class="about__link" href="#booking">Book a set</a>
       </div>
     </div>
@@ -850,6 +856,8 @@
     const mailLink = document.getElementById("bookingMail");
     mailLink.href = `mailto:${BOOKING_MAIL}`;
     mailLink.textContent = BOOKING_MAIL;
+    document.getElementById("vinylLink").href =
+      `mailto:${BOOKING_MAIL}?subject=${encodeURIComponent("Vinyl request")}&body=${encodeURIComponent("Hi Tom,\n\nI'd like to get these tracks on vinyl:\n\n")}`;
     document.querySelectorAll('a[href="mailto:booking@tomsira.com"]').forEach(a => { a.href = `mailto:${BOOKING_MAIL}`; a.textContent = BOOKING_MAIL; });
 
     const form = document.getElementById("bookingForm");
