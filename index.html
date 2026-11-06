@@ -42,6 +42,11 @@
   button { font: inherit; color: inherit; text-transform: inherit; letter-spacing: inherit; background: none; border: 0; padding: 0; cursor: pointer; }
 
   .head { display: flex; justify-content: space-between; gap: 16px; color: var(--mute); }
+  .head__nav { display: flex; gap: clamp(14px, 2.4vw, 28px); }
+  /* Vinyl: Platte als zwei Kreise, ruhig in Grau; nur Booking blinkt */
+  .head__vinyl { display: inline-flex; align-items: center; gap: 6px; }
+  .head__vinyl svg { width: 11px; height: 11px; flex: none; overflow: visible; }
+  .head__vinyl:hover { color: var(--fg); }
   /* Booking-Link: blitzt alle paar Sekunden kurz weiß auf, wie eine Leuchtschrift, die anspringt */
   .head__booking { color: var(--fg); animation: blink-on 7s steps(1, end) infinite; animation-delay: 2.5s; }
   .head__booking:hover { color: #fff; animation: none; text-shadow: 0 0 8px rgba(255,255,255,.7); }
@@ -606,7 +611,12 @@
   <header class="head">
     <span>Tom Sira</span>
     <span id="rpm">0 RPM</span>
-    <a href="#booking" class="head__booking">Booking</a>
+    <nav class="head__nav" aria-label="Main">
+      <a href="#" class="head__vinyl" data-vinyl title="Tracks on vinyl — on request">
+        <svg viewBox="0 0 12 12" aria-hidden="true"><circle cx="6" cy="6" r="5.5" fill="none" stroke="currentColor"/><circle cx="6" cy="6" r="1.6" fill="none" stroke="currentColor"/></svg>Vinyl
+      </a>
+      <a href="#booking" class="head__booking">Booking</a>
+    </nav>
   </header>
 
   <section class="hero" id="hero">
@@ -629,7 +639,7 @@
   </section>
 
   <div class="cat" id="cat"></div>
-  <p class="cat__vinyl"><a id="vinylLink" href="#">Tracks on vinyl — on request</a></p>
+  <p class="cat__vinyl"><a id="vinylLink" href="#" data-vinyl>Tracks on vinyl — on request</a></p>
 
   <section class="sets" id="sets" aria-labelledby="sets-title">
     <div class="sets__head"><span id="sets-title">Sets</span><span>Vinyl · Recorded on location</span></div>
@@ -859,8 +869,8 @@
     const mailLink = document.getElementById("bookingMail");
     mailLink.href = `mailto:${BOOKING_MAIL}`;
     mailLink.textContent = BOOKING_MAIL;
-    document.getElementById("vinylLink").href =
-      `mailto:${BOOKING_MAIL}?subject=${encodeURIComponent("Vinyl request")}&body=${encodeURIComponent("Hi Tom,\n\nI'd like to get these tracks on vinyl:\n\n")}`;
+    const vinylMail = `mailto:${BOOKING_MAIL}?subject=${encodeURIComponent("Vinyl request")}&body=${encodeURIComponent("Hi Tom,\n\nI'd like to get these tracks on vinyl:\n\n")}`;
+    document.querySelectorAll("[data-vinyl]").forEach(a => { a.href = vinylMail; });
     document.querySelectorAll('a[href="mailto:booking@tomsira.com"]').forEach(a => { a.href = `mailto:${BOOKING_MAIL}`; a.textContent = BOOKING_MAIL; });
 
     const form = document.getElementById("bookingForm");
