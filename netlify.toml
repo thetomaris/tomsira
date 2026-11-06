@@ -1,0 +1,3 @@
+# Statische Seite, kein Build nötig – Netlify liefert den Ordner direkt aus
+[build]
+  publish = "."

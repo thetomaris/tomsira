@@ -1,0 +1,1031 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tom Sira</title>
+<meta name="description" content="Tom Sira — slow, ambient electronic music. Vinyl sets with a mobile sound system for private evenings, vernissages, pop-ups, car meets and the beach.">
+<!-- Vorschau-Phase: nicht in Suchmaschinen, bis Domain, Impressum und Datenschutz stehen -->
+<meta name="robots" content="noindex">
+<meta property="og:title" content="Tom Sira">
+<meta property="og:description" content="Slow, ambient electronic music. Vinyl, mobile sound system.">
+<meta name="theme-color" content="#000000">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='15' fill='%23111'/%3E%3Ccircle cx='16' cy='16' r='6' fill='%23c8161d'/%3E%3Ccircle cx='16' cy='16' r='1.4' fill='%23000'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #000;
+    --fg: #e6e4de;
+    --mute: #6f6d68;
+    --line: #262624;
+    --ink: #9a978f;          /* Name in Ruhe */
+    --ink-on: #d6d3cb;       /* Name, wenn Musik läuft */
+    --red: #c8161d;          /* angelehnt an Porsche Guards Red */
+    --bar: 60px;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: var(--bg); color: var(--fg); }
+  body {
+    min-height: 100vh;
+    font: 11px/1.4 "IBM Plex Mono", ui-monospace, monospace;
+    text-transform: uppercase; letter-spacing: .06em;
+    padding: 18px 22px calc(var(--bar) + 28px);
+    overflow-x: hidden;
+  }
+  a { color: inherit; text-decoration: none; }
+  a:hover { color: var(--mute); }
+  button { font: inherit; color: inherit; text-transform: inherit; letter-spacing: inherit; background: none; border: 0; padding: 0; cursor: pointer; }
+
+  .head { display: flex; justify-content: space-between; gap: 16px; color: var(--mute); }
+  /* Booking-Link: blitzt alle paar Sekunden kurz weiß auf, wie eine Leuchtschrift, die anspringt */
+  .head__booking { color: var(--fg); animation: blink-on 7s steps(1, end) infinite; animation-delay: 2.5s; }
+  .head__booking:hover { color: #fff; animation: none; text-shadow: 0 0 8px rgba(255,255,255,.7); }
+  @keyframes blink-on {
+    0%, 88%, 100% { color: var(--fg); text-shadow: none; }
+    89%  { color: #fff; text-shadow: 0 0 6px rgba(255,255,255,.95), 0 0 18px rgba(255,255,255,.55); }
+    90%  { color: var(--mute); text-shadow: none; }
+    91%  { color: #fff; text-shadow: 0 0 6px rgba(255,255,255,.95), 0 0 18px rgba(255,255,255,.55); }
+    95%  { color: #fff; text-shadow: 0 0 4px rgba(255,255,255,.7), 0 0 12px rgba(255,255,255,.35); }
+  }
+  @media (prefers-reduced-motion: reduce) { .head__booking { animation: none; } }
+
+  /* ---------- Hero: ganz nah auf dem Etikett ---------- */
+  /* Das Etikett ist größer als der Ausschnitt; die Schrift läuft über die Ränder.
+     Gemessen und gesetzt in fit(): --L (Etikett), Schriftgröße. */
+  .hero {
+    position: relative;
+    height: 82vh;
+    margin: 14px -22px 6vh;
+    overflow: hidden;
+    isolation: isolate;
+    background: #000;
+    --L: 200vw;
+  }
+  .disc {
+    position: absolute; left: 50%; top: 50%;
+    width: var(--L); height: var(--L);
+    margin: calc(var(--L) / -2) 0 0 calc(var(--L) / -2);
+    border-radius: 50%;
+    will-change: transform;
+    transform: rotate(5deg);
+  }
+
+  /* Papier-Etikett in der Trackfarbe, matt, mit Fasern */
+  .label {
+    position: absolute; inset: 0; border-radius: 50%;
+    background-color: #121212;
+    background-image:
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='260' height='260'%3E%3Cfilter id='p'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.5 0.9' numOctaves='4' seed='5' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3CfeComponentTransfer%3E%3CfeFuncA type='linear' slope='0.35'/%3E%3C/feComponentTransfer%3E%3C/filter%3E%3Crect width='260' height='260' filter='url(%23p)'/%3E%3C/svg%3E"),
+      linear-gradient(160deg, rgba(255,255,255,.10), rgba(0,0,0,.18));
+    background-blend-mode: soft-light, normal;
+  }
+  .label { display: grid; place-items: center; }
+
+  /* Der Name als Silberfolie: geprägt (leichter Schatten nach unten), raue Druckkante */
+  .name {
+    position: relative;
+    margin: 0;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; font-weight: 700;
+    line-height: .76; letter-spacing: -.04em; text-align: center; white-space: nowrap;
+    color: #bababa;
+    filter: url(#spray);
+  }
+  .name span { display: block; }
+  .name span:first-child { margin-bottom: var(--gap, 120px); }
+
+  /* Gerichteter Schein: weich verwischte helle Kopie des Namens,
+     zur Maus hin verschoben – die zugewandte Seite strahlt stärker. */
+  .glow {
+    will-change: transform, opacity;
+    position: absolute; left: 50%; top: 50%;
+    transform: translate(-50%, -50%) translate(var(--gx, 0px), var(--gy, 0px));
+    color: #fff;
+    filter: url(#glow);
+    mix-blend-mode: screen;
+    opacity: var(--go, .35);
+    pointer-events: none;
+  }
+
+  /* Mittelloch mit kleinen Zeilen links und rechts davon */
+  .hub {
+    position: absolute; left: 50%; top: 50%;
+    width: 0; height: 0;
+    color: #7c7c7c;
+    font-size: 11px; letter-spacing: .14em; white-space: nowrap;
+  }
+  .hub::before {
+    content: ""; position: absolute;
+    width: var(--hole, 60px); height: var(--hole, 60px);
+    left: calc(var(--hole, 60px) / -2); top: calc(var(--hole, 60px) / -2);
+    border-radius: 50%; background: #000;
+    box-shadow: inset 0 3px 6px rgba(255,255,255,.08), 0 0 0 1px rgba(0,0,0,.4);
+  }
+  .hub span { position: absolute; top: -.7em; }
+  .hub .l { right: calc(var(--hole, 60px) / 2 + 16px); }
+  .hub .r { left: calc(var(--hole, 60px) / 2 + 16px); }
+
+  /* ---------- Licht und Film, stehen still über der drehenden Platte ---------- */
+  /* Lichtkeil: matte Papierflächen glänzen leicht, die Folie brennt aus */
+  .sheen, .halation, .film, .lift, .grade {
+    position: absolute; inset: 0; pointer-events: none;
+  }
+  .sheen {
+    background: conic-gradient(from var(--la, 0deg) at 50% 50%,
+      rgba(0,0,0,0) 0deg 18deg,
+      rgba(140,140,140,.10) 30deg, rgba(190,190,190,.26) 41deg, rgba(140,140,140,.10) 52deg,
+      rgba(0,0,0,0) 66deg 198deg,
+      rgba(140,140,140,.07) 210deg, rgba(190,190,190,.2) 221deg, rgba(140,140,140,.07) 232deg,
+      rgba(0,0,0,0) 246deg 360deg);
+    mix-blend-mode: color-dodge;
+  }
+  /* Halation: das Ausgebrannte strahlt rötlich in den Film */
+  .halation {
+    background: conic-gradient(from var(--la, 0deg) at 50% 50%,
+      rgba(0,0,0,0) 0deg 24deg, rgba(255,255,255,.14) 41deg, rgba(0,0,0,0) 58deg 204deg,
+      rgba(255,255,255,.1) 221deg, rgba(0,0,0,0) 238deg 360deg);
+    filter: blur(36px);
+    mix-blend-mode: screen;
+  }
+  /* Globale Belichtung: das Licht im Raum verschiebt sich träge Richtung Maus.
+     .exposure brennt die zugewandte Seite großflächig aus (color-dodge),
+     .shade lässt die abgewandte Seite ins Dunkle fallen. */
+  .exposure, .shade { position: absolute; inset: 0; pointer-events: none; }
+  .exposure {
+    background: radial-gradient(ellipse 95% 120% at var(--hx, 40%) var(--hy, 35%),
+      rgba(170,170,170,.55), rgba(130,130,130,.3) 40%, rgba(70,70,70,.08) 75%, rgba(0,0,0,0) 100%);
+    mix-blend-mode: color-dodge;
+    opacity: var(--hs, .5);
+  }
+  .shade {
+    background: linear-gradient(var(--ha, 135deg), rgba(0,0,0,0) 35%, rgba(0,0,0,.55) 100%);
+    mix-blend-mode: multiply;
+    opacity: var(--hd, .4);
+  }
+  /* Blitz von vorn: Mitte heller, Ränder saufen ab; dazu lebendiges Filmkorn */
+  .film {
+    background:
+      radial-gradient(ellipse 70% 80% at 50% 46%, rgba(255,255,255,.22), rgba(255,255,255,.06) 30%, rgba(255,255,255,0) 42%, rgba(0,0,0,.35) 70%, rgba(0,0,0,.85) 100%);
+    box-shadow: inset 0 0 120px rgba(0,0,0,.6);
+  }
+  .film::after {
+    content: ""; position: absolute; inset: -50%;
+    opacity: .55; mix-blend-mode: overlay; background-size: 320px 320px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' seed='11' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23g)'/%3E%3C/svg%3E");
+    animation: grain 0.6s steps(1) infinite;
+  }
+  @keyframes grain {
+    0%   { transform: translate(0, 0); }
+    17%  { transform: translate(-7%, 4%); }
+    33%  { transform: translate(5%, -6%); }
+    50%  { transform: translate(-3%, -9%); }
+    67%  { transform: translate(8%, 3%); }
+    83%  { transform: translate(-6%, 7%); }
+  }
+  /* Schnappschuss-Farbe: angehobene Schwärzen, kühle Schatten, warme Lichter */
+  .lift  { background: rgba(40, 40, 40, .18); mix-blend-mode: screen; }
+  /* (früher: grayscale-Filter auf der drehenden Platte – zu teuer; Farben sind jetzt direkt neutral) */
+
+  /* Remjet-Halation wie bei Kinofilm ohne Rückschicht (CineStill):
+     rot-oranger Lichthof außen an den hellen Kanten, am stärksten auf der beleuchteten Seite.
+     Eigene Kopie des Namens, dreht synchron mit der Platte. */
+  .remjet {
+    position: absolute; inset: 0; pointer-events: none;
+    mix-blend-mode: screen;
+    opacity: var(--rj, .6);
+    -webkit-mask-image: radial-gradient(ellipse 85% 110% at var(--hx, 40%) var(--hy, 35%), #000 0%, rgba(0,0,0,.55) 45%, rgba(0,0,0,.12) 80%, transparent 100%);
+            mask-image: radial-gradient(ellipse 85% 110% at var(--hx, 40%) var(--hy, 35%), #000 0%, rgba(0,0,0,.55) 45%, rgba(0,0,0,.12) 80%, transparent 100%);
+  }
+  .remjet__disc {
+    position: absolute; left: 50%; top: 50%;
+    width: var(--L); height: var(--L);
+    margin: calc(var(--L) / -2) 0 0 calc(var(--L) / -2);
+    display: grid; place-items: center;
+    will-change: transform;
+    transform: rotate(5deg);
+  }
+  .remjet .name { color: #fff; filter: url(#remjet); }
+  /* Staub und Kratzer auf dem Negativ */
+  .film::before {
+    content: ""; position: absolute; inset: 0; opacity: .55;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='600'%3E%3Cfilter id='d'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='1' seed='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  22 0 0 0 -17.6'/%3E%3C/filter%3E%3Crect width='600' height='600' filter='url(%23d)'/%3E%3Cpath d='M80 40 C 130 160, 90 260, 150 420' stroke='white' stroke-opacity='.35' stroke-width='.8' fill='none'/%3E%3Cpath d='M470 300 l 40 220' stroke='white' stroke-opacity='.25' stroke-width='.6'/%3E%3C/svg%3E");
+    background-size: 600px 600px;
+  }
+  @media (prefers-reduced-motion: reduce) { .film::after { animation: none; } }
+  /* Korn läuft nur, wenn man es sieht */
+  .hero.is-offscreen .film::after, .sets.is-offscreen .set__grain { animation-play-state: paused; }
+  .booking:not(.is-open) .set__grain { animation: none; }
+  /* schmal: kleine Zeilen über und unter das Loch statt daneben */
+  @media (max-width: 700px) {
+    .hub span { left: 0 !important; right: auto !important; transform: translateX(-50%); }
+    .hub .l { top: calc(var(--hole, 60px) / -2 - 1.9em); }
+    .hub .r { top: calc(var(--hole, 60px) / 2 + .8em); }
+  }
+
+  /* ---------- Katalog ---------- */
+  .cat { border-top: 1px solid var(--fg); }
+  .entry {
+    display: grid; grid-template-columns: 56px minmax(0, 1fr) auto; gap: 16px; align-items: baseline;
+    width: 100%; text-align: left;
+    padding: 13px 0; border-bottom: 1px solid var(--line);
+  }
+  .entry__no { color: var(--mute); }
+  .entry__title { font-size: clamp(16px, 2.2vw, 26px); font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; font-weight: 700; letter-spacing: -.01em; }
+  .entry__meta { color: var(--mute); white-space: nowrap; }
+  .entry:hover .entry__title { color: var(--mute); }
+  .entry.is-current .entry__title { color: var(--fg); }
+  .entry.is-current .entry__no::before { content: "▶ "; }
+  .entry.is-missing { cursor: default; }
+  .entry.is-missing .entry__title, .entry.is-missing:hover .entry__title { color: #34332f; }
+
+  /* ---------- Sets: Video, erst beim Klick geladen ---------- */
+  .sets { margin-top: 12vh; scroll-margin-top: 20px; }
+  .sets__head { display: flex; justify-content: space-between; gap: 16px; padding-bottom: 12px; border-bottom: 1px solid var(--fg); }
+  .sets__head span:last-child { color: var(--mute); }
+  .set { margin: 22px 0 0; }
+  .set__frame { position: relative; aspect-ratio: 16 / 9; background: #0b0b0b; overflow: hidden; }
+  .set__frame iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+  .set__poster { position: absolute; inset: 0; width: 100%; height: 100%; cursor: pointer; display: block; }
+  .set__poster img {
+    width: 100%; height: 100%; object-fit: cover; object-position: 50% 60%; display: block;
+    filter: url(#photo) brightness(.82);
+    transition: filter .4s ease;
+  }
+  .set__poster::after {
+    content: ""; position: absolute; inset: 0; pointer-events: none;
+    background: radial-gradient(ellipse 75% 75% at 50% 50%, rgba(0,0,0,0) 40%, rgba(0,0,0,.6) 100%);
+  }
+  .set__grain {
+    position: absolute; inset: -50%; pointer-events: none; z-index: 1; opacity: .45; mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' seed='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23g)'/%3E%3C/svg%3E");
+    background-size: 240px 240px;
+    animation: grain 0.6s steps(1) infinite;
+  }
+  .set__play {
+    position: absolute; left: 50%; top: 50%; z-index: 2; transform: translate(-50%, -50%);
+    display: inline-flex; align-items: center; gap: 12px;
+    padding: 14px 20px; border: 1px solid rgba(255,255,255,.7); color: #fff;
+    background: rgba(0,0,0,.25);
+    transition: background-color .2s ease, border-color .2s ease;
+  }
+  .set__play svg { width: 11px; height: 11px; fill: currentColor; }
+  .set__poster:hover .set__play, .set__poster:focus-visible .set__play { background: rgba(0,0,0,.5); border-color: #fff; }
+  .set__poster:hover img { filter: url(#photo) brightness(.95); }
+  .set__poster:focus-visible { outline: 1px solid var(--fg); outline-offset: 3px; }
+  .set__cap { display: grid; grid-template-columns: 56px minmax(0, 1fr) auto; gap: 16px; align-items: baseline; padding: 13px 0; border-bottom: 1px solid var(--line); }
+  .set__no { color: var(--mute); }
+  .set__title { font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; font-weight: 700; font-size: clamp(16px, 2.2vw, 26px); letter-spacing: -.01em; }
+  .set__meta { color: var(--mute); white-space: nowrap; }
+  @media (max-width: 700px) {
+    .set__cap { grid-template-columns: 44px minmax(0, 1fr); }
+    .set__meta { grid-column: 2; }
+  }
+
+  /* ---------- About: Porträt als analoger Abzug + ein Satz ---------- */
+  .about { margin-top: 12vh; }
+  .about__head { display: flex; justify-content: space-between; gap: 16px; padding-bottom: 12px; border-bottom: 1px solid var(--fg); }
+  .about__head span:last-child { color: var(--mute); }
+  .about__grid { display: grid; grid-template-columns: minmax(0, 300px) minmax(0, 1fr); gap: 6vw; align-items: end; padding-top: 28px; }
+  .portrait {
+    position: relative; margin: 0; aspect-ratio: 4 / 5; overflow: hidden; background: #0b0b0b;
+    box-shadow: 0 26px 52px -28px rgba(0,0,0,.95);
+  }
+  .portrait img {
+    display: block; width: 100%; height: 100%; object-fit: cover; object-position: 52% 40%;
+    transform: scale(1.12); transform-origin: 52% 46%;
+    filter: url(#photo) contrast(1.12) brightness(1.08);
+  }
+  /* Lichteinfall von oben rechts, Blitz-Lichtabfall, Staub, Korn */
+  .portrait::before {
+    content: ""; position: absolute; inset: 0; pointer-events: none; z-index: 1; mix-blend-mode: screen;
+    background: radial-gradient(ellipse 55% 60% at 100% 0%, rgba(255,110,40,.3), rgba(255,60,20,.08) 45%, rgba(0,0,0,0) 72%);
+  }
+  .portrait::after {
+    content: ""; position: absolute; inset: 0; pointer-events: none; z-index: 1;
+    background:
+      radial-gradient(ellipse 80% 75% at 50% 45%, rgba(255,255,255,.08), rgba(255,255,255,0) 42%, rgba(0,0,0,.5) 100%),
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400'%3E%3Cfilter id='d'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='1' seed='13' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  24 0 0 0 -19.4'/%3E%3C/filter%3E%3Crect width='400' height='400' filter='url(%23d)'/%3E%3C/svg%3E");
+  }
+  .portrait__grain {
+    position: absolute; inset: -50%; pointer-events: none; z-index: 2; opacity: .5; mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' seed='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23g)'/%3E%3C/svg%3E");
+    background-size: 200px 200px;
+    animation: grain 0.6s steps(1) infinite;
+  }
+  .about.is-offscreen .portrait__grain { animation-play-state: paused; }
+  .about__text {
+    margin: 0 0 18px; max-width: 40ch;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; font-size: 17px; line-height: 1.45;
+    text-transform: none; letter-spacing: 0;
+  }
+  .about__link { border-bottom: 1px solid #3a3936; padding-bottom: 3px; }
+  .about__link:hover { color: #fff; border-color: var(--fg); }
+  @media (max-width: 700px) {
+    .about__grid { grid-template-columns: 1fr; gap: 28px; }
+    .portrait { width: 72%; }
+  }
+
+  /* ---------- Booking: eigener Raum, über der Seite, Player bleibt sichtbar ---------- */
+  body.booking-open { overflow: hidden; }
+  .booking {
+    position: fixed; left: 0; right: 0; top: 0; bottom: var(--bar); z-index: 4;
+    background: #000;
+    overflow-y: auto;
+    padding: 0 22px;
+    opacity: 0; visibility: hidden;
+    transition: opacity .35s ease, visibility 0s linear .35s;
+  }
+  .booking.is-open { opacity: 1; visibility: visible; transition: opacity .35s ease; }
+  /* Leiste oben: wo bin ich, wie komme ich raus – bleibt beim Scrollen stehen */
+  .booking__bar {
+    position: sticky; top: 0; z-index: 2;
+    display: flex; justify-content: space-between; align-items: center;
+    height: 56px; margin: 0 -22px; padding: 0 22px;
+    background: #000; border-bottom: 1px solid #222220;
+  }
+  .booking__crumb { display: flex; gap: 10px; }
+  .booking__crumb span:first-child { color: var(--mute); }
+  .booking__crumb span:nth-child(2) { color: #3f3e3a; }
+  .booking__close {
+    display: inline-flex; align-items: center; gap: 10px;
+    padding: 9px 12px 9px 14px;
+    border: 1px solid #3a3936;
+    color: var(--fg);
+  }
+  .booking__close svg { width: 10px; height: 10px; stroke: currentColor; stroke-width: 1.6; }
+  .booking__close:hover { border-color: var(--fg); }
+  .booking__close:focus-visible { outline: 1px solid var(--fg); outline-offset: 3px; }
+
+  /* Inhalt wie vor dem Aufräumen: Kopfzeile, links Text + Schild + Mail, rechts Formular */
+  .booking__inner { padding: 7vh 0 12vh; }
+  .booking__head { display: flex; justify-content: space-between; align-items: baseline; gap: 16px; padding-bottom: 12px; border-bottom: 1px solid var(--fg); }
+  .booking__head h2 { margin: 0; font-size: 11px; font-weight: 500; letter-spacing: .14em; }
+  .booking__grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.3fr); gap: 8vw; padding-top: 44px; }
+  .booking__intro {
+    margin: 0 0 36px; max-width: 44ch;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; font-size: 17px; line-height: 1.45;
+    text-transform: none; letter-spacing: 0; color: var(--fg);
+  }
+  /* Set im Booking-Raum: kompakt, Breite der linken Spalte */
+  .set--compact { margin: -8px 0 36px; max-width: 520px; }
+  .set--compact .set__play { padding: 11px 16px; }
+  .set__note { margin-top: 10px; color: var(--mute); }
+
+  /* Wandschild wie in einer Ausstellung */
+  .placard {
+    margin: 0 0 40px; padding: 18px 20px 16px; max-width: 340px;
+    background: #f1efe9; color: #111;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; font-size: 12px; line-height: 1.5;
+    text-transform: none; letter-spacing: 0;
+  }
+  .placard p { margin: 0 0 10px; }
+  .placard p:last-child { margin-bottom: 0; }
+  .placard__artist { font-weight: 700; font-size: 14px; margin-bottom: 2px !important; }
+  .placard__title em { font-style: italic; }
+  .placard__meta { color: #6b6964; }
+  .booking__mail {
+    display: inline-block;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; font-weight: 700; text-transform: none;
+    font-size: clamp(18px, 2vw, 26px); letter-spacing: -.01em; line-height: 1.1;
+    border-bottom: 1px solid var(--fg); padding-bottom: 3px;
+  }
+
+  .form { display: grid; grid-template-columns: 1fr 1fr; gap: 30px 28px; }
+  .field { display: grid; gap: 8px; }
+  .field--wide { grid-column: 1 / -1; }
+  .field label { color: var(--mute); }
+  .field input, .field select, .field textarea {
+    font: 500 15px/1.4 "IBM Plex Mono", ui-monospace, monospace; letter-spacing: .02em; text-transform: none;
+    color: var(--fg); background: transparent;
+    border: 0; border-bottom: 1px solid #3a3936; border-radius: 0;
+    padding: 6px 0 8px; outline: none;
+    -webkit-appearance: none; appearance: none;
+  }
+  .field select { background: transparent url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%236f6d68'/%3E%3C/svg%3E") no-repeat right 2px center; padding-right: 20px; }
+  .field select option { background: #111; color: var(--fg); }
+  .field textarea { min-height: 96px; resize: vertical; }
+  .field input:focus, .field select:focus, .field textarea:focus { border-bottom-color: var(--fg); }
+  .field input::placeholder, .field textarea::placeholder { color: #45443f; }
+  .field input[type="date"] { color-scheme: dark; }
+  .field.is-invalid input, .field.is-invalid select { border-bottom-color: #ff6a5a; }
+  .field__err { color: #ff6a5a; font-size: 10px; min-height: 1em; }
+  .form__foot { grid-column: 1 / -1; display: flex; justify-content: flex-end; padding-top: 6px; }
+  .form__note { color: var(--mute); max-width: 46ch; text-transform: none; letter-spacing: .02em; }
+  .form__send { background: var(--fg); color: #000; padding: 16px 26px; font-weight: 500; letter-spacing: .14em; }
+  .form__send:hover { background: #fff; }
+  .form__send:focus-visible { outline: 1px solid var(--fg); outline-offset: 3px; }
+
+  @media (max-width: 900px) {
+    .booking__grid { grid-template-columns: 1fr; gap: 40px; }
+  }
+  @media (max-width: 760px) {
+    .booking { padding: 0 14px; }
+    .booking__bar { margin: 0 -14px; padding: 0 14px; }
+    .booking__head { flex-direction: column; gap: 6px; }
+    .form { grid-template-columns: 1fr; }
+    .form__foot { flex-direction: column; align-items: stretch; }
+  }
+
+  .foot { display: flex; justify-content: space-between; margin-top: 28px; color: var(--mute); }
+
+  /* ---------- Player: Lackfarbe wechselt pro Track ---------- */
+  /* Farbwerte angenähert, keine offiziellen Lackcodes */
+  body[data-color="rot"]    { --pc: #c8161d; --pt: #ffffff; --foil: #8c9095; }   /* Unirot / Guards Red, Silberfolie */
+  body[data-color="blau"]   { --pc: #1f3f91; --pt: #ffffff; --foil: #969aa0; }   /* Maritimblau, Silberfolie */
+  body[data-color="silber"] { --pc: #b9bdc1; --pt: #15171a; --foil: #1c1d1f; }   /* 996 Arktissilber, Schwarzlack-Druck */
+
+  .player {
+    position: fixed; left: 0; right: 0; bottom: 0; z-index: 5;
+    height: var(--bar);
+    background-color: var(--pc);
+    color: var(--pt);
+    display: grid;
+    grid-template-columns: var(--bar) minmax(0, 1fr) auto auto;
+    align-items: center;
+    font-weight: 500;
+    transition: background-color .6s ease, color .6s ease;
+  }
+  .player > * { position: relative; }
+  .player__btn { height: 100%; display: grid; place-items: center; border-right: 1px solid color-mix(in srgb, var(--pt) 30%, transparent); }
+  .player__btn svg { width: 14px; height: 14px; fill: currentColor; }
+  .player__btn .i-pause { display: none; }
+  body.is-playing .i-play { display: none; }
+  body.is-playing .i-pause { display: block; }
+
+  .player__info { padding: 0 18px; min-width: 0; }
+  .player__line { display: flex; gap: 14px; white-space: nowrap; overflow: hidden; }
+  .player__label { opacity: .6; }
+  .player__title { overflow: hidden; text-overflow: ellipsis; }
+  .player__track { position: relative; margin-top: 9px; height: 2px; background: color-mix(in srgb, var(--pt) 25%, transparent); cursor: pointer; }
+  .player__track::before { content: ""; position: absolute; inset: -8px 0; }
+  .player__fill { position: absolute; left: 0; top: 0; bottom: 0; width: 0; background: var(--pt); }
+  .player__time { padding: 0 22px; white-space: nowrap; font-variant-numeric: tabular-nums; }
+
+  /* ---------- Pitch-Fader in der Player-Zeile ----------
+     links −8, rechts +8, rastet bei 0 ein; die Leuchte geht genau bei 0 an. */
+  .pitch {
+    display: flex; align-items: center; gap: 10px;
+    height: 100%; padding: 0 18px;
+    border-left: 1px solid color-mix(in srgb, var(--pt) 30%, transparent);
+    font-size: 10px; letter-spacing: .08em;
+  }
+  .pitch__end { opacity: .65; }
+  .pitch__val { min-width: 6.5ch; text-align: right; font-variant-numeric: tabular-nums; font-size: 11px; }
+  .pitch__rail {
+    position: relative; width: 150px; height: 34px;
+    cursor: ew-resize; touch-action: none; outline: none;
+    --p: .5;
+  }
+  .pitch__rail:focus-visible { outline: 1px solid var(--pt); outline-offset: 2px; }
+  /* Schlitz */
+  .pitch__rail::before {
+    content: ""; position: absolute; left: 0; right: 0; top: 50%; height: 2px; margin-top: -1px;
+    background: color-mix(in srgb, var(--pt) 45%, transparent);
+  }
+  /* Skala unter dem Schlitz: 17 Striche, Mitte länger */
+  .pitch__ticks {
+    position: absolute; left: 5px; right: 5px; top: calc(50% + 6px); height: 5px;
+    background: linear-gradient(90deg, color-mix(in srgb, var(--pt) 55%, transparent) 0 1px, transparent 1px) 0 0 / calc((100% - 1px) / 16) 100% repeat-x;
+  }
+  .pitch__ticks::after { content: ""; position: absolute; left: 50%; top: 0; width: 1px; height: 9px; background: var(--pt); }
+  /* Leuchte bei 0: kleine glatte Linse in schmaler Fassung */
+  .pitch__led {
+    flex: none; width: 8px; height: 8px; border-radius: 50%;
+    background: radial-gradient(circle at 35% 30%, rgba(255,255,255,.35) 0 1px, rgba(255,255,255,0) 2px), #1d1b1a;
+    box-shadow: 0 0 0 1px rgba(0,0,0,.55);
+    transition: background .15s ease, box-shadow .15s ease;
+  }
+  .pitch.is-zero .pitch__led {
+    background: radial-gradient(circle at 35% 30%, #fff 0 1px, rgba(255,255,255,0) 2px), radial-gradient(circle, #fffaf0 0 35%, #ffd99a 100%);
+    box-shadow: 0 0 0 1px rgba(0,0,0,.55), 0 0 6px 1px rgba(255,220,160,.8);
+  }
+  /* Fader-Kappe */
+  .pitch__cap {
+    position: absolute; top: 50%; width: 12px; height: 24px; margin-top: -12px;
+    left: calc((100% - 12px) * var(--p));
+    background: var(--pt);
+    box-shadow: 0 2px 4px rgba(0,0,0,.35);
+  }
+  .pitch__cap::after { content: ""; position: absolute; top: 3px; bottom: 3px; left: 50%; width: 1px; margin-left: -.5px; background: var(--pc); }
+
+  @media (max-width: 700px) {
+    body { padding: 14px 14px calc(var(--bar) + 24px); }
+    .entry { grid-template-columns: 44px minmax(0, 1fr); }
+    .entry__meta { grid-column: 2; }
+    .head span:nth-child(2) { display: none; }
+    .player__label { display: none; }
+    .player__time { padding: 0 14px; font-size: 10px; }
+    .pitch { padding: 0 10px; gap: 6px; }
+    .pitch__end, .pitch__val { display: none; }
+    .pitch__rail { width: 64px; }
+  }
+</style>
+</head>
+<body data-color="rot">
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <!-- Druck auf dem Etikett: leicht raue Kante, Farbe deckt nicht ganz -->
+    <filter id="print" x="-5%" y="-10%" width="110%" height="120%" color-interpolation-filters="sRGB">
+      <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" seed="2" result="n"/>
+      <feDisplacementMap in="SourceGraphic" in2="n" scale="2" xChannelSelector="R" yChannelSelector="G" result="rough"/>
+      <feTurbulence type="fractalNoise" baseFrequency="1.3" numOctaves="1" seed="8" result="fine"/>
+      <feColorMatrix in="fine" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  -6 0 0 0 4.3" result="mask"/>
+      <feComposite in="rough" in2="mask" operator="in"/>
+    </filter>
+    <!-- Kopie von der Kopie: Toner läuft aus, Streifen fehlen, horizontal verschmierter Geist -->
+    <filter id="xerox" x="-6%" y="-12%" width="112%" height="124%" color-interpolation-filters="sRGB">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="1.8" result="b"/>
+      <feComponentTransfer in="b" result="t"><feFuncA type="linear" slope="5" intercept="-1.7"/></feComponentTransfer>
+      <feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="2" seed="5" result="n"/>
+      <feDisplacementMap in="t" in2="n" scale="4" xChannelSelector="R" yChannelSelector="G" result="r"/>
+      <feTurbulence type="fractalNoise" baseFrequency="0.004 0.1" numOctaves="3" seed="9" result="s"/>
+      <feColorMatrix in="s" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  -18 0 0 0 11.0" result="streaks"/>
+      <feTurbulence type="fractalNoise" baseFrequency="0.35" numOctaves="3" seed="11" result="sp"/>
+      <feColorMatrix in="sp" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  -16 0 0 0 9.9" result="holes"/>
+      <feComposite in="streaks" in2="holes" operator="in" result="mask"/>
+      <feComposite in="r" in2="mask" operator="in" result="ink"/>
+      <feGaussianBlur in="r" stdDeviation="14 0.6" result="sm"/>
+      <feComponentTransfer in="sm" result="smear"><feFuncA type="linear" slope=".75" intercept="-.38"/></feComponentTransfer>
+      <feMerge><feMergeNode in="smear"/><feMergeNode in="ink"/></feMerge>
+    </filter>
+    <!-- Remjet-Halation: Lichthof nur außerhalb der Buchstaben, rot innen, orange weit -->
+    <filter id="remjet" x="-40%" y="-50%" width="180%" height="200%" color-interpolation-filters="sRGB">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="16" result="near"/>
+      <feComposite in="near" in2="SourceAlpha" operator="out" result="nearEdge"/>
+      <feComponentTransfer in="nearEdge" result="nearEdge2"><feFuncA type="linear" slope="1.1"/></feComponentTransfer>
+      <feFlood flood-color="#ff1e00" result="red"/>
+      <feComposite in="red" in2="nearEdge2" operator="in" result="redHalo"/>
+      <feGaussianBlur in="SourceAlpha" stdDeviation="42" result="far"/>
+      <feComposite in="far" in2="SourceAlpha" operator="out" result="farEdge"/>
+      <feFlood flood-color="#ff5a14" flood-opacity=".45" result="orange"/>
+      <feComposite in="orange" in2="farEdge" operator="in" result="orangeHalo"/>
+      <feMerge><feMergeNode in="orangeHalo"/><feMergeNode in="redHalo"/></feMerge>
+    </filter>
+    <!-- Analoger Abzug: Graustufen, angehobene Schwärzen, harte Lichter, Remjet-Halo um helle Stellen -->
+    <filter id="photo" x="0" y="0" width="100%" height="100%" color-interpolation-filters="sRGB">
+      <feColorMatrix type="saturate" values="0" result="g"/>
+      <feComponentTransfer in="g" result="gc">
+        <feFuncR type="table" tableValues="0.07 0.16 0.42 0.8 1 1"/>
+        <feFuncG type="table" tableValues="0.07 0.16 0.42 0.8 1 1"/>
+        <feFuncB type="table" tableValues="0.07 0.16 0.42 0.8 1 1"/>
+      </feComponentTransfer>
+      <feColorMatrix in="SourceGraphic" type="matrix" values="0 0 0 0 1  0 0 0 0 .28  0 0 0 0 .1  1.5 1.5 1.5 0 -3.3" result="hi"/>
+      <feGaussianBlur in="hi" stdDeviation="9" result="halo"/>
+      <feBlend in="halo" in2="gc" mode="screen"/>
+    </filter>
+    <filter id="glow" x="-40%" y="-50%" width="180%" height="200%" color-interpolation-filters="sRGB">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="22" result="b"/>
+      <feComponentTransfer in="b"><feFuncA type="linear" slope="1.6"/></feComponentTransfer>
+    </filter>
+    <filter id="spray" x="-35%" y="-45%" width="170%" height="190%" color-interpolation-filters="sRGB">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="3" result="cb"/>
+      <feComponentTransfer in="cb" result="core"><feFuncA type="linear" slope="3.2" intercept="-1.1"/></feComponentTransfer>
+      <feGaussianBlur in="SourceGraphic" stdDeviation="14" result="hb"/>
+      <feComponentTransfer in="hb" result="halo"><feFuncA type="linear" slope="0.6"/></feComponentTransfer>
+      <feGaussianBlur in="SourceGraphic" stdDeviation="26" result="far"/>
+      <feTurbulence type="fractalNoise" baseFrequency="1.1" numOctaves="1" seed="6" result="dots"/>
+      <feColorMatrix in="dots" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  -14 0 0 0 8.6" result="dotsA"/>
+      <feComposite in="far" in2="dotsA" operator="in" result="specks0"/>
+      <feComponentTransfer in="specks0" result="specks"><feFuncA type="linear" slope="2.0"/></feComponentTransfer>
+      <feMerge><feMergeNode in="specks"/><feMergeNode in="halo"/><feMergeNode in="core"/></feMerge>
+    </filter>
+  </svg>
+
+  <header class="head">
+    <span>Tom Sira</span>
+    <span id="rpm">0 RPM</span>
+    <a href="#booking" class="head__booking">Booking</a>
+  </header>
+
+  <section class="hero" id="hero">
+    <div class="disc" id="disc">
+      <div class="label">
+        <h1 class="name" id="name"><span>TOM</span><span>SIRA</span></h1>
+        <div class="name glow" id="glow" aria-hidden="true"><span>TOM</span><span>SIRA</span></div>
+        <div class="hub" aria-hidden="true"><span class="l" id="labelTitle"></span><span class="r">DFH</span></div>
+      </div>
+    </div>
+    <div class="remjet" aria-hidden="true">
+      <div class="remjet__disc" id="rdisc"><div class="name" id="rname"><span>TOM</span><span>SIRA</span></div></div>
+    </div>
+    <div class="sheen" aria-hidden="true"></div>
+    <div class="halation" aria-hidden="true"></div>
+    <div class="exposure" aria-hidden="true"></div>
+    <div class="shade" aria-hidden="true"></div>
+    <div class="lift" aria-hidden="true"></div>
+    <div class="film" aria-hidden="true"></div>
+  </section>
+
+  <div class="cat" id="cat"></div>
+
+  <section class="sets" id="sets" aria-labelledby="sets-title">
+    <div class="sets__head"><span id="sets-title">Sets</span><span>Vinyl · Recorded on location</span></div>
+    <figure class="set">
+      <div class="set__frame" id="setFrame">
+        <button class="set__poster" id="setPoster" type="button" aria-label="Play set: Maison d'Oô, Lagrasse">
+          <img src="img/fenster.jpg" alt="">
+          <span class="set__grain" aria-hidden="true"></span>
+          <span class="set__play"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 1.5v13l11-6.5z"/></svg>Play set</span>
+        </button>
+      </div>
+      <figcaption class="set__cap">
+        <span class="set__no">001</span>
+        <span class="set__title">Maison d'Oô, Lagrasse</span>
+        <span class="set__meta">Home vinyl set · 28 min · Oct 2026</span>
+      </figcaption>
+    </figure>
+  </section>
+
+  <section class="booking" id="booking" role="dialog" aria-modal="true" aria-labelledby="booking-title" aria-hidden="true">
+    <div class="booking__bar">
+      <div class="booking__crumb"><span>Tom Sira</span><span>/</span><span id="booking-title">Booking</span></div>
+      <button type="button" class="booking__close" id="bookingClose" aria-label="Close booking">Close
+        <svg viewBox="0 0 10 10" aria-hidden="true"><path d="M1 1l8 8M9 1l-8 8" fill="none"/></svg>
+      </button>
+    </div>
+    <div class="booking__inner">
+      <header class="booking__head">
+        <h2>Booking</h2>
+        <span>Private · Vernissage · Pop-up · Car meets · Beach</span>
+      </header>
+      <div class="booking__grid">
+        <div>
+          <p class="booking__intro">Slow, ambient electronic music for rooms where people look closely. Comes with its own mobile sound system and sets up almost anywhere. Vinyl on request.</p>
+          <figure class="set set--compact">
+            <div class="set__frame">
+              <button class="set__poster" type="button" aria-label="Play set: Maison d'Oô, Lagrasse">
+                <img src="img/fenster.jpg" alt="" loading="lazy">
+                <span class="set__grain" aria-hidden="true"></span>
+                <span class="set__play"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 1.5v13l11-6.5z"/></svg>Play set</span>
+              </button>
+            </div>
+            <figcaption class="set__note">Maison d'Oô, Lagrasse — home vinyl set, 28 min</figcaption>
+          </figure>
+
+          <!-- Angaben wie ein Wandschild in einer Ausstellung -->
+          <figure class="placard" aria-label="Details">
+            <p class="placard__artist">Tom Sira</p>
+            <p class="placard__title"><em>Listening Room</em>, 2026</p>
+            <p>Ambient and slow electronic sets.<br>Mobile sound system, vinyl, digital files.</p>
+            <p class="placard__meta">Duration variable<br>Dimensions variable</p>
+          </figure>
+
+          <a class="booking__mail" id="bookingMail" href="#"></a>
+        </div>
+
+        <form class="form" id="bookingForm" novalidate>
+          <div class="field"><label for="f-name">Name</label><input id="f-name" name="name" autocomplete="name" required><span class="field__err" aria-live="polite"></span></div>
+          <div class="field"><label for="f-mail">Email</label><input id="f-mail" name="email" type="email" autocomplete="email" required><span class="field__err" aria-live="polite"></span></div>
+          <div class="field field--wide"><label for="f-type">Occasion</label>
+            <select id="f-type" name="occasion">
+              <option>Private evening</option><option>Vernissage / opening</option><option>Pop-up dinner</option><option>Car meet / drive</option><option>Coffee &amp; craft event</option><option>Beach</option><option>Something else</option>
+            </select><span class="field__err"></span></div>
+          <div class="field"><label for="f-city">City</label><input id="f-city" name="city" required><span class="field__err" aria-live="polite"></span></div>
+          <div class="field"><label for="f-date">Date</label><input id="f-date" name="date" type="date" required><span class="field__err" aria-live="polite"></span></div>
+          <div class="field field--wide"><label for="f-sound">Sound</label>
+            <select id="f-sound" name="sound">
+              <option>Bring the mobile setup</option><option>There is a sound system on site</option><option>Not sure yet</option>
+            </select><span class="field__err"></span></div>
+          <div class="field field--wide"><label for="f-msg">Message</label><textarea id="f-msg" name="message" placeholder="The room, the guests, the mood."></textarea><span class="field__err"></span></div>
+          <div class="form__foot">
+            <button class="form__send" type="submit">Send request</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <section class="about" id="about" aria-labelledby="about-title">
+    <div class="about__head"><span id="about-title">About</span><span>Tom Sira</span></div>
+    <div class="about__grid">
+      <figure class="portrait">
+        <img src="img/portrait.jpg" alt="Tom Sira in a cap, smiling, trees behind him" loading="lazy">
+        <span class="portrait__grain" aria-hidden="true"></span>
+      </figure>
+      <div>
+        <p class="about__text">Tom Sira plays slow, ambient electronic music, mostly from vinyl, often straight out of the boot of his car.</p>
+        <a class="about__link" href="#booking">Book a set</a>
+      </div>
+    </div>
+  </section>
+
+  <footer class="foot">
+    <a href="#booking">Booking</a>
+    <span>© 2026</span>
+  </footer>
+
+  <div class="player" id="player">
+    <button class="player__btn" id="play" aria-label="Play">
+      <svg class="i-play" viewBox="0 0 16 16"><path d="M3 1.5v13l11-6.5z"/></svg>
+      <svg class="i-pause" viewBox="0 0 16 16"><path d="M3 1.5h3.5v13H3zM9.5 1.5H13v13H9.5z"/></svg>
+    </button>
+    <div class="player__info">
+      <div class="player__line"><span class="player__label" id="label">Latest track</span><span class="player__title" id="ptitle"></span></div>
+      <div class="player__track" id="seek"><div class="player__fill" id="fill"></div></div>
+    </div>
+    <div class="pitch is-zero" id="pitchBox" title="Pitch · double-click to reset">
+      <span class="pitch__led" aria-hidden="true"></span>
+      <span class="pitch__end" aria-hidden="true">−8</span>
+      <div class="pitch__rail" id="rail" role="slider" tabindex="0" aria-label="Pitch" aria-valuemin="-8" aria-valuemax="8" aria-valuenow="0" aria-valuetext="0.0 percent">
+        <span class="pitch__ticks"></span>
+        <span class="pitch__cap"></span>
+      </div>
+      <span class="pitch__end" aria-hidden="true">+8</span>
+      <span class="pitch__val" id="pitchVal">±0.0 %</span>
+    </div>
+    <div class="player__time" id="time">0:00 / 0:00</div>
+  </div>
+  <audio id="audio" preload="metadata"></audio>
+
+  <script>
+    // Tracks: neuester zuerst. Dateien liegen im Ordner audio/. file: null = noch keine Datei, wird grau angezeigt.
+    const TRACKS = [
+      { no: "001", title: "Tuned To God 5.0",                 date: "Oct 11", key: "B Min", bpm: 118, file: "audio/tuned-to-god-5.mp3" },
+      { no: "002", title: "DRAGAN",                           date: "Sep 12", key: "G Min", bpm: 117, file: null },
+      { no: "003", title: "Jaguar",                           date: "Jul 12", key: "D Min", bpm: 126, file: "audio/jaguar.mp3" },
+      { no: "004", title: "Understand It From Here (slowed)", date: "Jul 04", key: "G Min", bpm: 199, file: null }
+    ];
+
+    // ---------- Katalog ----------
+    const cat = document.getElementById("cat");
+    TRACKS.forEach((t, i) => {
+      const b = document.createElement("button");
+      b.className = "entry";
+      b.innerHTML = `<span class="entry__no">${t.no}</span><span class="entry__title">${t.title}</span><span class="entry__meta">${t.file ? `${t.key} · ${t.bpm} BPM · ${t.date}` : "Soon"}</span>`;
+      if (t.file) b.addEventListener("click", () => load(i, true));
+      else { b.classList.add("is-missing"); b.disabled = true; }
+      cat.appendChild(b);
+    });
+
+    // ---------- Player ----------
+    const audio = document.getElementById("audio");
+    const btn = document.getElementById("play");
+    const fill = document.getElementById("fill");
+    const time = document.getElementById("time");
+    const ptitle = document.getElementById("ptitle");
+    const label = document.getElementById("label");
+    let current = 0;
+    const fmt = s => isFinite(s) ? `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, "0")}` : "0:00";
+
+    // Lackfarbe wechselt mit jedem Trackwechsel: Unirot → Maritimblau → 996-Silber
+    const COLORS = ["rot", "blau", "silber"];
+    let colorStep = 0;
+    const labelTitle = document.getElementById("labelTitle");
+
+    function load(i, play) {
+      if (play && i !== current) { colorStep = (colorStep + 1) % COLORS.length; document.body.dataset.color = COLORS[colorStep]; }
+      current = i;
+      labelTitle.textContent = `${TRACKS[i].no} ${TRACKS[i].title}`;
+      audio.src = TRACKS[i].file;
+      ptitle.textContent = TRACKS[i].title;
+      label.textContent = i === 0 ? "Latest track" : `No. ${TRACKS[i].no}`;
+      [...cat.children].forEach((e, j) => e.classList.toggle("is-current", play && j === i));
+      if (play) audio.play().catch(() => {});
+    }
+    load(0, false);
+
+    // Pitch: Tempo und Tonhöhe ändern sich zusammen, wie bei Vinyl
+    const pitchBox = document.getElementById("pitchBox");
+    const rail = document.getElementById("rail");
+    const pitchVal = document.getElementById("pitchVal");
+    audio.preservesPitch = audio.mozPreservesPitch = audio.webkitPreservesPitch = false;
+    let pitchValue = 0;
+    function setPitch(v, snap = true) {
+      v = Math.max(-8, Math.min(8, Math.round(v * 10) / 10));
+      if (snap && Math.abs(v) < 0.6) v = 0;       // Einrasten bei 0 (beim Ziehen)
+      pitchValue = v;
+      const rate = 1 + v / 100;
+      audio.defaultPlaybackRate = rate;
+      audio.playbackRate = rate;
+      rail.style.setProperty("--p", ((v + 8) / 16).toFixed(4));
+      pitchBox.classList.toggle("is-zero", v === 0);
+      const txt = v === 0 ? "±0.0" : `${v > 0 ? "+" : "−"}${Math.abs(v).toFixed(1)}`;
+      pitchVal.textContent = `${txt} %`;
+      rail.setAttribute("aria-valuenow", v);
+      rail.setAttribute("aria-valuetext", `${txt} percent`);
+    }
+    // Ziehen: links −8, rechts +8
+    function fromPointer(e) {
+      const r = rail.getBoundingClientRect();
+      const x = Math.max(0, Math.min(1, (e.clientX - r.left - 6) / (r.width - 12)));
+      setPitch(x * 16 - 8);
+    }
+    rail.addEventListener("pointerdown", e => { rail.setPointerCapture(e.pointerId); fromPointer(e); });
+    rail.addEventListener("pointermove", e => { if (rail.hasPointerCapture(e.pointerId)) fromPointer(e); });
+    rail.addEventListener("dblclick", () => setPitch(0));
+    rail.addEventListener("keydown", e => {
+      const step = { ArrowRight: .1, ArrowUp: .1, ArrowLeft: -.1, ArrowDown: -.1, PageUp: 1, PageDown: -1 }[e.key];
+      if (step !== undefined) { e.preventDefault(); setPitch(pitchValue + step, false); }
+      if (e.key === "Home" || e.key === "0") { e.preventDefault(); setPitch(0); }
+    });
+    audio.addEventListener("loadedmetadata", () => { audio.playbackRate = audio.defaultPlaybackRate; });
+
+    btn.addEventListener("click", () => audio.paused ? audio.play().catch(() => {}) : audio.pause());
+    audio.addEventListener("play", () => { document.body.classList.add("is-playing"); btn.setAttribute("aria-label", "Pause"); cat.children[current].classList.add("is-current"); });
+    audio.addEventListener("pause", () => { document.body.classList.remove("is-playing"); btn.setAttribute("aria-label", "Play"); });
+    audio.addEventListener("timeupdate", () => {
+      fill.style.width = (audio.currentTime / audio.duration * 100 || 0) + "%";
+      time.textContent = `${fmt(audio.currentTime)} / ${fmt(audio.duration)}`;
+    });
+    audio.addEventListener("loadedmetadata", () => { time.textContent = `0:00 / ${fmt(audio.duration)}`; });
+    // Am Ende den nächsten Track mit Datei spielen
+    audio.addEventListener("ended", () => {
+      for (let j = current + 1; j < TRACKS.length; j++) if (TRACKS[j].file) return load(j, true);
+    });
+    audio.addEventListener("error", () => { time.textContent = "File missing"; document.body.classList.remove("is-playing"); });
+    document.getElementById("seek").addEventListener("click", e => {
+      const r = e.currentTarget.getBoundingClientRect();
+      if (isFinite(audio.duration)) audio.currentTime = (e.clientX - r.left) / r.width * audio.duration;
+    });
+
+    // ---------- Booking-Formular: prüft Pflichtfelder, öffnet die Mail-App vorausgefüllt ----------
+    // Booking-Adresse: hier einmal ändern, sobald die Domain/Adresse existiert
+    const BOOKING_MAIL = "booking@tomsira.com";
+    const mailLink = document.getElementById("bookingMail");
+    mailLink.href = `mailto:${BOOKING_MAIL}`;
+    mailLink.textContent = BOOKING_MAIL;
+    document.querySelectorAll('a[href="mailto:booking@tomsira.com"]').forEach(a => { a.href = `mailto:${BOOKING_MAIL}`; a.textContent = BOOKING_MAIL; });
+
+    const form = document.getElementById("bookingForm");
+    function check(input) {
+      const field = input.closest(".field"), err = field.querySelector(".field__err");
+      let msg = "";
+      if (input.required && !input.value.trim()) msg = "Required";
+      else if (input.type === "email" && input.value && !/^\S+@\S+\.\S+$/.test(input.value)) msg = "Check the email address";
+      field.classList.toggle("is-invalid", !!msg);
+      err.textContent = msg;
+      return !msg;
+    }
+    form.querySelectorAll("input").forEach(i => i.addEventListener("input", () => { if (i.closest(".field").classList.contains("is-invalid")) check(i); }));
+    form.addEventListener("submit", e => {
+      e.preventDefault();
+      const inputs = [...form.querySelectorAll("input[required]")];
+      const ok = inputs.map(check).every(Boolean);
+      if (!ok) { inputs.find(i => i.closest(".field").classList.contains("is-invalid")).focus(); return; }
+      const d = Object.fromEntries(new FormData(form));
+      const subject = `Booking request — ${d.occasion}, ${d.city}, ${d.date}`;
+      const body = [
+        `Name: ${d.name}`, `Email: ${d.email}`,
+        `Occasion: ${d.occasion}`, `City: ${d.city}`, `Date: ${d.date}`, `Sound: ${d.sound}`,
+        "", d.message || ""
+      ].join("\n");
+      location.href = `mailto:${BOOKING_MAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    });
+
+    // ---------- Set-Video: lädt erst beim Klick, in Farbe; pausiert die Seitenmusik ----------
+    // Gilt für jedes .set__poster (Hauptseite und Booking-Raum)
+    const SET_VIDEO = "2gxz0dAFTK0";
+    const setIframes = [];
+    const ytCommand = (f, func) => f.contentWindow && f.contentWindow.postMessage(JSON.stringify({ event: "command", func, args: [] }), "*");
+    function pauseSets(except) { setIframes.forEach(f => { if (f !== except) ytCommand(f, "pauseVideo"); }); }
+    document.querySelectorAll(".set__poster").forEach(poster => poster.addEventListener("click", () => {
+      audio.pause();
+      pauseSets();
+      const f = document.createElement("iframe");
+      f.src = `https://www.youtube-nocookie.com/embed/${SET_VIDEO}?autoplay=1&rel=0&modestbranding=1&playsinline=1&enablejsapi=1`;
+      f.title = "Maison d'Oô, Lagrasse – Home Vinyl Set";
+      f.allow = "autoplay; encrypted-media; picture-in-picture; fullscreen";
+      f.allowFullscreen = true;
+      poster.parentElement.replaceChildren(f);
+      setIframes.push(f);
+    }));
+    ["sets", "about"].forEach(id => new IntersectionObserver(([en]) => document.getElementById(id).classList.toggle("is-offscreen", !en.isIntersecting))
+      .observe(document.getElementById(id)));
+    // Startet unten ein Track, pausieren alle Videos
+    audio.addEventListener("play", () => pauseSets());
+
+    // Booking-Raum öffnen/schließen (Musik läuft weiter)
+    const booking = document.getElementById("booking");
+    let lastFocus = null;
+    function openBooking() {
+      lastFocus = document.activeElement;
+      booking.classList.add("is-open"); booking.setAttribute("aria-hidden", "false");
+      document.body.classList.add("booking-open");
+      if (location.hash !== "#booking") history.pushState(null, "", "#booking");
+      booking.scrollTop = 0;
+      setTimeout(() => document.getElementById("bookingClose").focus({ preventScroll: true }), 50);
+    }
+    function closeBooking(fromHistory) {
+      booking.classList.remove("is-open"); booking.setAttribute("aria-hidden", "true");
+      booking.querySelectorAll("iframe").forEach(f => ytCommand(f, "pauseVideo"));
+      document.body.classList.remove("booking-open");
+      if (!fromHistory && location.hash === "#booking") history.replaceState(null, "", location.pathname);
+      if (lastFocus) lastFocus.focus({ preventScroll: true });
+    }
+    document.querySelectorAll('a[href="#booking"]').forEach(a => a.addEventListener("click", e => { e.preventDefault(); openBooking(); }));
+    document.getElementById("bookingClose").addEventListener("click", () => closeBooking(false));
+
+    addEventListener("keydown", e => { if (e.key === "Escape" && booking.classList.contains("is-open")) closeBooking(false); });
+    addEventListener("popstate", () => location.hash === "#booking" ? openBooking() : closeBooking(true));
+    if (location.hash === "#booking") openBooking();
+
+    // ---------- Name einpassen: so groß, dass er sich im Kreis drehen kann ----------
+    const hero = document.getElementById("hero");
+    const disc = document.getElementById("disc");
+    const name = document.getElementById("name");
+    const glow = document.getElementById("glow");
+    const rdisc = document.getElementById("rdisc");
+    const rname = document.getElementById("rname");
+    function fit() {
+      const W = hero.clientWidth, H = hero.clientHeight;
+      // Etikett größer als die Bilddiagonale: wir sehen nur Etikett, auch beim Drehen
+      hero.style.setProperty("--L", Math.hypot(W, H) * 1.1 + "px");
+      const hole = Math.max(24, Math.min(W, H) * 0.05);
+      const gap = hole + (W < 700 ? 54 : 16);
+      hero.style.setProperty("--hole", hole + "px");
+      hero.style.setProperty("--gap", gap + "px");
+      name.style.fontSize = "100px";
+      const w = Math.max(...[...name.children].map(s => { s.style.display = "inline-block"; const x = s.offsetWidth; s.style.display = ""; return x; }));
+      const lines = name.offsetHeight - gap;
+      // so groß wie möglich, aber beide Zeilen vollständig im Bild und lesbar
+      name.style.fontSize = glow.style.fontSize = rname.style.fontSize = Math.min(100 * W * 0.94 / w, 100 * (H * 0.92 - gap) / lines) + "px";
+    }
+    (document.fonts ? document.fonts.ready : Promise.resolve()).then(fit);
+    addEventListener("resize", fit);
+
+    // ---------- Animation: läuft nur, solange sich etwas bewegt ----------
+    // Platte dreht, Licht/Schein ziehen nach der Maus – sonst schläft die Schleife.
+    const RPM = 6;   // bewusst langsamer als 33⅓: 10 Sekunden pro Umdrehung
+    const rpmOut = document.getElementById("rpm");
+    const still = matchMedia("(prefers-reduced-motion: reduce)").matches;
+    let angle = 5, speed = 0, lastT = 0, running = false, heroVisible = true;   // Platte liegt beim Öffnen schon 5° schräg
+    let mx = null, my = null, gvx = 0, gvy = 0, gop = .35;   // gerichteter Schein
+    let lpx = .4, lpy = .35;                                  // globales Licht (0..1 im Hero)
+    const written = new Map();
+    // Nur schreiben, wenn sich der Wert wirklich ändert – sonst zeichnet der Browser umsonst neu
+    function put(el, key, val) { const id = el.id + key; if (written.get(id) !== val) { written.set(id, val); el.style.setProperty(key, val); } }
+    function wake() { if (!running && heroVisible && !document.hidden) { running = true; lastT = performance.now(); requestAnimationFrame(tick); } }
+
+    addEventListener("pointermove", e => { if (e.pointerType === "mouse") { mx = e.clientX; my = e.clientY; wake(); } }, { passive: true });
+    document.addEventListener("mouseleave", () => { mx = my = null; wake(); });
+    ["play", "pause", "ratechange"].forEach(ev => audio.addEventListener(ev, wake));
+    document.addEventListener("visibilitychange", wake);
+    addEventListener("resize", wake);
+    new IntersectionObserver(([en]) => {
+      heroVisible = en.isIntersecting;
+      hero.classList.toggle("is-offscreen", !heroVisible);
+      wake();
+    }).observe(hero);
+
+    function tick(t) {
+      if (!heroVisible || document.hidden) { running = false; return; }
+      const dt = Math.min(0.05, (t - lastT) / 1000); lastT = t;
+
+      // Platte: Optik übertreibt den Pitch 4× (+8 % Ton = +32 % Drehung); Anlauf schneller als Auslauf
+      const target = document.body.classList.contains("is-playing") ? RPM * (1 + 4 * (audio.playbackRate - 1)) : 0;
+      const k = target > speed ? 2.2 : 0.9;
+      speed += (target - speed) * Math.min(1, k * dt);
+      if (Math.abs(target - speed) < 0.01) speed = target;
+      angle = (angle + speed * 6 * dt) % 360;   // U/min × 6 = Grad pro Sekunde
+      const rot = `rotate(${angle.toFixed(2)}deg)`;
+      if (written.get("rot") !== rot) { written.set("rot", rot); disc.style.transform = rdisc.style.transform = rot; }
+
+      // Gerichteter Schein zur Maus, in die Drehung der Platte umgerechnet
+      let tx = 0, ty = 0, to = .35;
+      const r = hero.getBoundingClientRect();
+      if (mx !== null) {
+        const vx = mx - (r.left + r.width / 2), vy = my - (r.top + r.height / 2);
+        const len = Math.hypot(vx, vy) || 1, kk = 45 * Math.min(1, len / 520);
+        tx = vx / len * kk; ty = vy / len * kk;
+        to = .5 + .35 * Math.max(0, 1 - len / 900);
+      }
+      const e = Math.min(1, 16 * dt);
+      gvx += (tx - gvx) * e; gvy += (ty - gvy) * e; gop += (to - gop) * e;
+      const a = angle * Math.PI / 180;
+      put(glow, "--gx", (gvx * Math.cos(a) + gvy * Math.sin(a)).toFixed(1) + "px");
+      put(glow, "--gy", (-gvx * Math.sin(a) + gvy * Math.cos(a)).toFixed(1) + "px");
+      put(glow, "--go", gop.toFixed(2));
+
+      // Globales Licht: 60 % des Wegs zur Maus, mit Trägheit; ohne Maus oben links
+      let tpx = .4, tpy = .35;
+      if (mx !== null) {
+        tpx = Math.max(-.1, Math.min(1.1, .5 + ((mx - r.left) / r.width - .5) * .6));
+        tpy = Math.max(-.1, Math.min(1.1, .5 + ((my - r.top) / r.height - .5) * .6));
+      }
+      lpx += (tpx - lpx) * e; lpy += (tpy - lpy) * e;
+      const offX = lpx - .5, offY = lpy - .5, off = Math.min(1, Math.hypot(offX, offY) / .45);
+      put(hero, "--hx", (lpx * 100).toFixed(1) + "%");
+      put(hero, "--hy", (lpy * 100).toFixed(1) + "%");
+      put(hero, "--hs", (0.5 + 0.2 * off).toFixed(2));
+      put(hero, "--ha", (Math.atan2(-offX, offY) * 180 / Math.PI).toFixed(0) + "deg");   // Schatten auf der abgewandten Seite
+      put(hero, "--hd", (0.15 + 0.45 * off).toFixed(2));
+      put(hero, "--rj", (0.2 + 0.25 * off).toFixed(2));                                     // Remjet stärker bei mehr Licht
+
+      const rpmTxt = `${speed < 0.05 ? 0 : speed.toFixed(1)} RPM`;
+      if (rpmOut.textContent !== rpmTxt) rpmOut.textContent = rpmTxt;
+
+      // Weiterlaufen nur, solange sich noch etwas bewegt
+      const settled = speed === 0 && target === 0
+        && Math.abs(tx - gvx) < .05 && Math.abs(ty - gvy) < .05 && Math.abs(to - gop) < .002
+        && Math.abs(tpx - lpx) < .0005 && Math.abs(tpy - lpy) < .0005;
+      if (settled) { running = false; return; }
+      requestAnimationFrame(tick);
+    }
+    if (still) {   // reduzierte Bewegung: einmal den Ruhezustand setzen, keine Animation
+      disc.style.transform = rdisc.style.transform = `rotate(${angle}deg)`;
+    } else {
+      wake();
+    }
+  </script>
+</body>
+</html>
