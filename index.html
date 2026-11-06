@@ -439,6 +439,30 @@
     .form__foot { flex-direction: column; align-items: stretch; }
   }
 
+  /* Nach dem Absenden: falls keine Mail-App aufgeht, steht die Adresse da */
+  .form__sent { grid-column: 1 / -1; margin: 0; color: var(--mute); text-transform: none; letter-spacing: .02em; line-height: 1.6; }
+  .form__sent a { color: var(--fg); border-bottom: 1px solid #3a3936; }
+
+  /* Vinyl-Raum: gleiche Bühne wie Booking; Tracks wählt man über kleine Platten */
+  .picks { grid-column: 1 / -1; border: 0; margin: 0; padding: 0; min-width: 0; }
+  .picks legend { color: var(--mute); padding: 0; margin-bottom: 10px; }
+  .pick {
+    position: relative; display: grid; grid-template-columns: 16px 40px minmax(0, 1fr); gap: 14px; align-items: center;
+    padding: 13px 0; border-bottom: 1px solid var(--line); cursor: pointer;
+  }
+  .pick:first-child { border-top: 1px solid var(--line); }
+  .pick input { position: absolute; opacity: 0; width: 1px; height: 1px; pointer-events: none; }
+  .pick svg { width: 15px; height: 15px; overflow: visible; }
+  .pick circle { fill: none; stroke: #4a4944; transition: fill .15s, stroke .15s; }
+  .pick:hover circle { stroke: var(--fg); }
+  .pick input:checked + svg .o { fill: var(--fg); stroke: var(--fg); }
+  .pick input:checked + svg .i { fill: #000; stroke: #000; }
+  .pick input:focus-visible + svg { outline: 1px solid var(--fg); outline-offset: 3px; }
+  .pick__no { color: var(--mute); }
+  .pick__title { font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; font-weight: 700; font-size: 16px; letter-spacing: -.01em; text-transform: none; }
+  .pick input:not(:checked) ~ .pick__title { color: #a9a7a1; }
+  .picks .field__err { display: block; margin-top: 8px; }
+
   /* Vinyl auf Anfrage: eine schlichte Zeile unter den Tracks */
   .cat__vinyl { margin: 18px 0 0; }
   .cat__vinyl a { border-bottom: 1px solid #3a3936; padding-bottom: 3px; }
@@ -612,7 +636,7 @@
     <span>Tom Sira</span>
     <span id="rpm">0 RPM</span>
     <nav class="head__nav" aria-label="Main">
-      <a href="#" class="head__vinyl" data-vinyl title="Tracks on vinyl — on request">
+      <a href="#vinyl" class="head__vinyl" title="Tracks on vinyl — on request">
         <svg viewBox="0 0 12 12" aria-hidden="true"><circle cx="6" cy="6" r="5.5" fill="none" stroke="currentColor"/><circle cx="6" cy="6" r="1.6" fill="none" stroke="currentColor"/></svg>Vinyl
       </a>
       <a href="#booking" class="head__booking">Booking</a>
@@ -639,7 +663,7 @@
   </section>
 
   <div class="cat" id="cat"></div>
-  <p class="cat__vinyl"><a id="vinylLink" href="#" data-vinyl>Tracks on vinyl — on request</a></p>
+  <p class="cat__vinyl"><a id="vinylLink" href="#vinyl">Tracks on vinyl — on request</a></p>
 
   <section class="sets" id="sets" aria-labelledby="sets-title">
     <div class="sets__head"><span id="sets-title">Sets</span><span>Vinyl · Recorded on location</span></div>
@@ -663,7 +687,7 @@
   <section class="booking" id="booking" role="dialog" aria-modal="true" aria-labelledby="booking-title" aria-hidden="true">
     <div class="booking__bar">
       <div class="booking__crumb"><span>Tom Sira</span><span>/</span><span id="booking-title">Booking</span></div>
-      <button type="button" class="booking__close" id="bookingClose" aria-label="Close booking">Close
+      <button type="button" class="booking__close" aria-label="Close booking">Close
         <svg viewBox="0 0 10 10" aria-hidden="true"><path d="M1 1l8 8M9 1l-8 8" fill="none"/></svg>
       </button>
     </div>
@@ -695,7 +719,7 @@
             <p class="placard__meta">Duration variable<br>Dimensions variable</p>
           </figure>
 
-          <a class="booking__mail" id="bookingMail" href="#"></a>
+          <a class="booking__mail" data-mail href="#"></a>
         </div>
 
         <form class="form" id="bookingForm" novalidate>
@@ -715,6 +739,39 @@
           <div class="form__foot">
             <button class="form__send" type="submit">Send request</button>
           </div>
+          <p class="form__sent" aria-live="polite" hidden>Your mail app should open with the request prepared. If nothing appears, write to <a data-mail href="#"></a>.</p>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <section class="booking" id="vinyl" role="dialog" aria-modal="true" aria-labelledby="vinyl-title" aria-hidden="true">
+    <div class="booking__bar">
+      <div class="booking__crumb"><span>Tom Sira</span><span>/</span><span id="vinyl-title">Vinyl</span></div>
+      <button type="button" class="booking__close" aria-label="Close vinyl">Close
+        <svg viewBox="0 0 10 10" aria-hidden="true"><path d="M1 1l8 8M9 1l-8 8" fill="none"/></svg>
+      </button>
+    </div>
+    <div class="booking__inner">
+      <header class="booking__head">
+        <h2>Vinyl</h2>
+        <span>On request · Made to order</span>
+      </header>
+      <div class="booking__grid">
+        <div>
+          <p class="booking__intro">Every track in the catalogue is available on vinyl, made to order and in small numbers. Choose the pieces you would like to keep; format and price follow by mail.</p>
+          <a class="booking__mail" data-mail href="#"></a>
+        </div>
+
+        <form class="form" id="vinylForm" novalidate>
+          <fieldset class="picks"><legend>Tracks</legend><div id="vinylPicks"></div><span class="field__err" id="vinylErr" aria-live="polite"></span></fieldset>
+          <div class="field"><label for="v-name">Name</label><input id="v-name" name="name" autocomplete="name" required><span class="field__err" aria-live="polite"></span></div>
+          <div class="field"><label for="v-mail">Email</label><input id="v-mail" name="email" type="email" autocomplete="email" required><span class="field__err" aria-live="polite"></span></div>
+          <div class="field field--wide"><label for="v-msg">Message</label><textarea id="v-msg" name="message" placeholder="Quantity, a dedication, anything else."></textarea><span class="field__err"></span></div>
+          <div class="form__foot">
+            <button class="form__send" type="submit">Request vinyl</button>
+          </div>
+          <p class="form__sent" aria-live="polite" hidden>Your mail app should open with the request prepared. If nothing appears, write to <a data-mail href="#"></a>.</p>
         </form>
       </div>
     </div>
@@ -866,11 +923,12 @@
     // ---------- Booking-Formular: prüft Pflichtfelder, öffnet die Mail-App vorausgefüllt ----------
     // Booking-Adresse: hier einmal ändern, sobald die Domain/Adresse existiert
     const BOOKING_MAIL = "booking@tomsira.com";
-    const mailLink = document.getElementById("bookingMail");
-    mailLink.href = `mailto:${BOOKING_MAIL}`;
-    mailLink.textContent = BOOKING_MAIL;
-    const vinylMail = `mailto:${BOOKING_MAIL}?subject=${encodeURIComponent("Vinyl request")}&body=${encodeURIComponent("Hi Tom,\n\nI'd like to get these tracks on vinyl:\n\n")}`;
-    document.querySelectorAll("[data-vinyl]").forEach(a => { a.href = vinylMail; });
+    document.querySelectorAll("[data-mail]").forEach(a => { a.href = `mailto:${BOOKING_MAIL}`; a.textContent = BOOKING_MAIL; });
+    // Öffnet die Mail-App; geht keine auf, zeigt der Hinweis darunter die Adresse
+    function sendMail(f, subject, body) {
+      location.href = `mailto:${BOOKING_MAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+      f.querySelector(".form__sent").hidden = false;
+    }
     document.querySelectorAll('a[href="mailto:booking@tomsira.com"]').forEach(a => { a.href = `mailto:${BOOKING_MAIL}`; a.textContent = BOOKING_MAIL; });
 
     const form = document.getElementById("bookingForm");
@@ -883,7 +941,7 @@
       err.textContent = msg;
       return !msg;
     }
-    form.querySelectorAll("input").forEach(i => i.addEventListener("input", () => { if (i.closest(".field").classList.contains("is-invalid")) check(i); }));
+    document.querySelectorAll(".field input").forEach(i => i.addEventListener("input", () => { if (i.closest(".field").classList.contains("is-invalid")) check(i); }));
     form.addEventListener("submit", e => {
       e.preventDefault();
       const inputs = [...form.querySelectorAll("input[required]")];
@@ -896,7 +954,30 @@
         `Occasion: ${d.occasion}`, `City: ${d.city}`, `Date: ${d.date}`, `Sound: ${d.sound}`,
         "", d.message || ""
       ].join("\n");
-      location.href = `mailto:${BOOKING_MAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+      sendMail(form, subject, body);
+    });
+
+    // ---------- Vinyl-Anfrage: Tracks wählen, Name, Mail ----------
+    const vForm = document.getElementById("vinylForm"), vErr = document.getElementById("vinylErr");
+    const picks = document.getElementById("vinylPicks");
+    TRACKS.forEach(t => {
+      const l = document.createElement("label");
+      l.className = "pick";
+      l.innerHTML = `<input type="checkbox" name="track" value="${t.no} ${t.title}"><svg viewBox="0 0 14 14" aria-hidden="true"><circle class="o" cx="7" cy="7" r="6.5"/><circle class="i" cx="7" cy="7" r="2"/></svg><span class="pick__no">${t.no}</span><span class="pick__title">${t.title}</span>`;
+      picks.append(l);
+    });
+    picks.addEventListener("change", () => { if (picks.querySelector(":checked")) vErr.textContent = ""; });
+    vForm.addEventListener("submit", e => {
+      e.preventDefault();
+      const tracks = [...picks.querySelectorAll(":checked")].map(c => c.value);
+      vErr.textContent = tracks.length ? "" : "Choose at least one track";
+      const inputs = [...vForm.querySelectorAll("input[required]")];
+      const fieldsOk = inputs.map(check).every(Boolean);
+      if (!tracks.length) { picks.querySelector("input").focus(); return; }
+      if (!fieldsOk) { inputs.find(i => i.closest(".field").classList.contains("is-invalid")).focus(); return; }
+      const d = Object.fromEntries(new FormData(vForm));
+      const body = ["Tracks:", ...tracks.map(t => `– ${t}`), "", `Name: ${d.name}`, `Email: ${d.email}`, "", d.message || ""].join("\n");
+      sendMail(vForm, `Vinyl request — ${tracks.length === 1 ? tracks[0] : tracks.length + " tracks"}`, body);
     });
 
     // ---------- Set-Video: lädt erst beim Klick, in Farbe; pausiert die Seitenmusik ----------
@@ -921,30 +1002,39 @@
     // Startet unten ein Track, pausieren alle Videos
     audio.addEventListener("play", () => pauseSets());
 
-    // Booking-Raum öffnen/schließen (Musik läuft weiter)
-    const booking = document.getElementById("booking");
+    // Räume (Booking, Vinyl) öffnen/schließen – die Musik läuft weiter
+    const rooms = { booking: document.getElementById("booking"), vinyl: document.getElementById("vinyl") };
+    const openRoom = () => Object.values(rooms).find(r => r.classList.contains("is-open"));
     let lastFocus = null;
-    function openBooking() {
-      lastFocus = document.activeElement;
-      booking.classList.add("is-open"); booking.setAttribute("aria-hidden", "false");
-      document.body.classList.add("booking-open");
-      if (location.hash !== "#booking") history.pushState(null, "", "#booking");
-      booking.scrollTop = 0;
-      setTimeout(() => document.getElementById("bookingClose").focus({ preventScroll: true }), 50);
+    function shut(room) {
+      room.classList.remove("is-open"); room.setAttribute("aria-hidden", "true");
+      room.querySelectorAll("iframe").forEach(f => ytCommand(f, "pauseVideo"));
     }
-    function closeBooking(fromHistory) {
-      booking.classList.remove("is-open"); booking.setAttribute("aria-hidden", "true");
-      booking.querySelectorAll("iframe").forEach(f => ytCommand(f, "pauseVideo"));
+    function enter(id) {
+      const room = rooms[id], cur = openRoom();
+      if (cur === room) return;
+      if (cur) shut(cur); else lastFocus = document.activeElement;
+      room.classList.add("is-open"); room.setAttribute("aria-hidden", "false");
+      document.body.classList.add("booking-open");
+      if (location.hash !== "#" + id) history.pushState(null, "", "#" + id);
+      room.scrollTop = 0;
+      setTimeout(() => room.querySelector(".booking__close").focus({ preventScroll: true }), 50);
+    }
+    function leave(fromHistory) {
+      const cur = openRoom();
+      if (!cur) return;
+      shut(cur);
       document.body.classList.remove("booking-open");
-      if (!fromHistory && location.hash === "#booking") history.replaceState(null, "", location.pathname);
+      if (!fromHistory && rooms[location.hash.slice(1)]) history.replaceState(null, "", location.pathname);
       if (lastFocus) lastFocus.focus({ preventScroll: true });
     }
-    document.querySelectorAll('a[href="#booking"]').forEach(a => a.addEventListener("click", e => { e.preventDefault(); openBooking(); }));
-    document.getElementById("bookingClose").addEventListener("click", () => closeBooking(false));
+    Object.keys(rooms).forEach(id => document.querySelectorAll(`a[href="#${id}"]`)
+      .forEach(a => a.addEventListener("click", e => { e.preventDefault(); enter(id); })));
+    document.querySelectorAll(".booking__close").forEach(b => b.addEventListener("click", () => leave(false)));
 
-    addEventListener("keydown", e => { if (e.key === "Escape" && booking.classList.contains("is-open")) closeBooking(false); });
-    addEventListener("popstate", () => location.hash === "#booking" ? openBooking() : closeBooking(true));
-    if (location.hash === "#booking") openBooking();
+    addEventListener("keydown", e => { if (e.key === "Escape" && openRoom()) leave(false); });
+    addEventListener("popstate", () => rooms[location.hash.slice(1)] ? enter(location.hash.slice(1)) : leave(true));
+    if (rooms[location.hash.slice(1)]) enter(location.hash.slice(1));
 
     // ---------- Name einpassen: so groß, dass er sich im Kreis drehen kann ----------
     const hero = document.getElementById("hero");
