@@ -830,7 +830,7 @@
         <p class="booking__intro" id="thanksText">A personal reply follows by mail.</p>
         <figure class="placard" aria-label="Your request">
           <p class="placard__artist">Tom Sira</p>
-          <p class="placard__title"><em id="thanksKind">Request</em>, <span id="thanksYear">2026</span></p>
+          <p class="placard__title"><em id="thanksKind">Request</em></p>
           <p id="thanksWhat"></p>
           <p class="placard__meta" id="thanksDate"></p>
         </figure>
@@ -1059,7 +1059,6 @@
       document.getElementById("thanksKind").textContent = kind;
       document.getElementById("thanksText").textContent = text;
       document.getElementById("thanksWhat").textContent = what;
-      document.getElementById("thanksYear").textContent = new Date().getFullYear();
       document.getElementById("thanksDate").textContent = `Received ${longDate(Date.now())}`;
       enter("thanks");
     }
