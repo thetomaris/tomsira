@@ -269,7 +269,7 @@
     content: ""; position: absolute; inset: 0; pointer-events: none;
     background: radial-gradient(ellipse 85% 85% at 50% 50%, rgba(0,0,0,0) 55%, rgba(0,0,0,.22) 100%);
   }
-  .set__grain {
+  .set__grain, .studio__grain {
     position: absolute; inset: -50%; pointer-events: none; z-index: 1; opacity: .28; mix-blend-mode: overlay;
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' seed='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23g)'/%3E%3C/svg%3E");
     background-size: 240px 240px;
@@ -297,6 +297,41 @@
   @media (max-width: 700px) {
     .set__cap { grid-template-columns: 44px minmax(0, 1fr); }
     .set__meta { grid-column: 2; }
+  }
+
+  /* ---------- Studio: fünf Bilder wie ein Kontaktabzug; schmal als Wischleiste ---------- */
+  .studio { margin-top: 12vh; }
+  .studio__strip { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 10px; margin-top: 22px; }
+  .frame { margin: 0; scroll-snap-align: start; }
+  .frame__img { position: relative; aspect-ratio: 3 / 4; overflow: hidden; background: #0b0b0b; }
+  .frame__img img {
+    display: block; width: 100%; height: 100%; object-fit: cover;
+    filter: grayscale(1) contrast(1.06) brightness(1.06);
+    transition: filter .9s ease;
+  }
+  .frame__img::after {
+    content: ""; position: absolute; inset: 0; pointer-events: none; z-index: 2;
+    background: radial-gradient(ellipse 85% 85% at 50% 50%, rgba(0,0,0,0) 55%, rgba(0,0,0,.25) 100%);
+  }
+  @media (hover: hover) { .frame:hover img { filter: grayscale(0) contrast(1.02) brightness(1); } }
+  .frame figcaption { display: flex; gap: 12px; padding-top: 10px; }
+  .frame figcaption span { color: var(--mute); }
+  .studio.is-offscreen .studio__grain { animation-play-state: paused; }
+  .studio__note {
+    margin: 26px 0 0; max-width: 46ch;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; font-size: 17px; line-height: 1.45;
+    text-transform: none; letter-spacing: 0;
+  }
+  @media (max-width: 900px) {
+    .studio__strip {
+      grid-template-columns: none; grid-auto-flow: column; grid-auto-columns: 40%;
+      overflow-x: auto; scroll-snap-type: x mandatory; overscroll-behavior-x: contain;
+      margin: 22px -22px 0; padding: 0 22px; scroll-padding: 0 22px; scrollbar-width: none;
+    }
+    .studio__strip::-webkit-scrollbar { display: none; }
+  }
+  @media (max-width: 700px) {
+    .studio__strip { grid-auto-columns: 70%; margin: 22px -14px 0; padding: 0 14px; scroll-padding: 0 14px; }
   }
 
   /* ---------- About: Porträt als analoger Abzug + ein Satz ---------- */
@@ -706,6 +741,19 @@
         <span class="set__meta">Home vinyl set · 28 min · Oct 2026</span>
       </figcaption>
     </figure>
+  </section>
+
+  <!-- Studio: Kontaktabzug, schwarzweiß; Farbe beim Darüberfahren. Videos und Lukes Künstlername folgen -->
+  <section class="studio" id="studio" aria-labelledby="studio-title">
+    <div class="sets__head"><span id="studio-title">Studio</span><span>Behind the scenes</span></div>
+    <div class="studio__strip">
+      <figure class="frame"><div class="frame__img"><img src="img/studio-1.jpg" width="768" height="1024" loading="lazy" alt="The studio: a Soundcraft mixing desk under bare bulbs, synthesizers along the wall, two leather chairs"><span class="studio__grain" aria-hidden="true"></span></div><figcaption><span>01</span>Room</figcaption></figure>
+      <figure class="frame"><div class="frame__img"><img src="img/studio-2.jpg" width="768" height="1024" loading="lazy" alt="A session at the synthesizer, seen from behind, under a single bulb"><span class="studio__grain" aria-hidden="true"></span></div><figcaption><span>02</span>Synth</figcaption></figure>
+      <figure class="frame"><div class="frame__img"><img src="img/studio-3.jpg" width="768" height="1024" loading="lazy" alt="A laptop with an open session resting on the Soundcraft desk, a monitor speaker behind"><span class="studio__grain" aria-hidden="true"></span></div><figcaption><span>03</span>Session</figcaption></figure>
+      <figure class="frame"><div class="frame__img"><img src="img/studio-4.jpg" width="768" height="1024" loading="lazy" alt="The mixing desk with a laptop, a speaker and an empty chair"><span class="studio__grain" aria-hidden="true"></span></div><figcaption><span>04</span>Desk</figcaption></figure>
+      <figure class="frame"><div class="frame__img"><img src="img/studio-5.jpg" width="768" height="1024" loading="lazy" alt="Two turntables beneath a tall window with palm leaves outside, a synthesizer against the wall"><span class="studio__grain" aria-hidden="true"></span></div><figcaption><span>05</span>Decks</figcaption></figure>
+    </div>
+    <p class="studio__note">Where the current tracks took shape: long sessions at an old Soundcraft desk, analogue synthesizers within reach. Film from the studio follows.</p>
   </section>
 
   <section class="booking" id="booking" role="dialog" aria-modal="true" aria-labelledby="booking-title" aria-hidden="true">
@@ -1209,7 +1257,7 @@
       poster.parentElement.replaceChildren(f);
       setIframes.push(f);
     }));
-    ["sets", "about"].forEach(id => new IntersectionObserver(([en]) => document.getElementById(id).classList.toggle("is-offscreen", !en.isIntersecting))
+    ["sets", "studio", "about"].forEach(id => new IntersectionObserver(([en]) => document.getElementById(id).classList.toggle("is-offscreen", !en.isIntersecting))
       .observe(document.getElementById(id)));
     // Startet unten ein Track, pausieren alle Videos
     audio.addEventListener("play", () => pauseSets());
