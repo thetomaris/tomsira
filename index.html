@@ -889,6 +889,72 @@
       { no: "004", title: "Understand It From Here (slowed)", date: "Jul 04", key: "G Min", bpm: 199, file: null }
     ];
 
+    // ---------- Tastenklicks wie am Plattenspieler: im Browser erzeugt, keine Dateien ----------
+    // press = Start/Stop (schwer, mit Nachfedern), tick = leichte Taste, detent = Pitch rastet bei 0 ein
+    const SFX_LEVEL = 0.5;                 // Gesamtlautstärke der Klicks (0 = aus)
+    const SFX_VOICES = (() => {
+      const noiseFor = new WeakMap();
+      function noise(c) {                  // immer dasselbe Rauschen: jede Taste klingt jedes Mal gleich
+        if (!noiseFor.has(c)) {
+          const b = c.createBuffer(1, Math.floor(c.sampleRate * 0.06), c.sampleRate), d = b.getChannelData(0);
+          for (let i = 0, s = 7; i < d.length; i++) { s = (s * 16807) % 2147483647; d[i] = s / 1073741823.5 - 1; }
+          noiseFor.set(c, b);
+        }
+        return noiseFor.get(c);
+      }
+      function env(c, out, t, gain, decay) {
+        const g = c.createGain();
+        g.gain.setValueAtTime(gain, t);
+        g.gain.exponentialRampToValueAtTime(0.0001, t + decay);
+        g.connect(out);
+        return g;
+      }
+      // kurzer gefilterter Rauschstoß: Kunststoff und Kontakt
+      function burst(c, out, t, freq, q, gain, decay) {
+        const s = c.createBufferSource(), f = c.createBiquadFilter();
+        s.buffer = noise(c); f.type = "bandpass"; f.frequency.value = freq; f.Q.value = q;
+        s.connect(f).connect(env(c, out, t, gain, decay));
+        s.start(t); s.stop(t + decay + 0.01);
+      }
+      // fallender Sinus: das Gewicht der Taste
+      function thump(c, out, t, from, to, gain, decay) {
+        const o = c.createOscillator();
+        o.frequency.setValueAtTime(from, t);
+        o.frequency.exponentialRampToValueAtTime(to, t + decay);
+        o.connect(env(c, out, t, gain, decay));
+        o.start(t); o.stop(t + decay + 0.01);
+      }
+      return {
+        press(c, out, t) {
+          burst(c, out, t, 5200, 0.8, 0.5, 0.005);
+          burst(c, out, t, 1700, 1.4, 1.4, 0.022);
+          thump(c, out, t, 150, 55, 0.5, 0.07);
+          burst(c, out, t + 0.06, 2600, 1.5, 0.35, 0.01);
+        },
+        tick(c, out, t) {
+          burst(c, out, t, 4200, 1.2, 1.5, 0.006);
+          burst(c, out, t, 2000, 2, 1.25, 0.012);
+        },
+        detent(c, out, t) {
+          burst(c, out, t, 1200, 4, 2, 0.012);
+          thump(c, out, t, 320, 200, 0.25, 0.02);
+        }
+      };
+    })();
+    let sfxCtx = null, sfxOut = null;
+    function sfx(name) {
+      const AC = window.AudioContext || window.webkitAudioContext;
+      if (!AC || !SFX_LEVEL) return;
+      try {
+        if (!sfxCtx) { sfxCtx = new AC(); sfxOut = sfxCtx.createGain(); sfxOut.gain.value = SFX_LEVEL; sfxOut.connect(sfxCtx.destination); }
+        if (sfxCtx.state === "suspended") sfxCtx.resume();
+        SFX_VOICES[name](sfxCtx, sfxOut, sfxCtx.currentTime + 0.005);
+      } catch (e) { /* ohne Klick weiter */ }
+    }
+    // Leichte Tasten: Menü, Tracks, Schließen, Absenden, Set-Video, Vinyl-Auswahl
+    const TICK = 'a[href^="#"], .entry, .booking__close, [data-leave], .form__send, .set__poster, .pick input';
+    document.addEventListener("click", e => { if (e.target.closest(TICK)) sfx("tick"); });
+
     // ---------- Katalog ----------
     const cat = document.getElementById("cat");
     TRACKS.forEach((t, i) => {
@@ -973,6 +1039,7 @@
     function setPitch(v, snap = true) {
       v = Math.max(-8, Math.min(8, Math.round(v * 10) / 10));
       if (snap && Math.abs(v) < 0.6) v = 0;       // Einrasten bei 0 (beim Ziehen)
+      if (v === 0 && pitchValue !== 0) sfx("detent");
       pitchValue = v;
       const rate = 1 + v / 100;
       audio.defaultPlaybackRate = rate;
@@ -1002,6 +1069,7 @@
     load(0, false);
 
     btn.addEventListener("click", () => {
+      sfx("press");
       if (audio.paused) return spinUp();
       if (deckDir < 0) { showPlaying(true); return runDeck(1, 450 * (1 - deck)); }   // während des Auslaufs wieder an
       spinDown();
