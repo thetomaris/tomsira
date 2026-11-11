@@ -237,6 +237,10 @@
   }
 
   /* ---------- Katalog ---------- */
+  /* Kopf über dem Katalog: alle Tracks sind ein gemeinsames Projekt mit I AM MDLR */
+  .cat__head { display: flex; justify-content: space-between; gap: 16px; padding-bottom: 12px; }
+  .cat__head a { border-bottom: 1px solid #3a3936; padding-bottom: 2px; }
+  .cat__head a:hover { color: #fff; border-color: var(--fg); }
   .cat { border-top: 1px solid var(--fg); }
   .entry {
     display: grid; grid-template-columns: 56px minmax(0, 1fr) auto; gap: 16px; align-items: baseline;
@@ -314,18 +318,7 @@
     background: radial-gradient(ellipse 85% 85% at 50% 50%, rgba(0,0,0,0) 55%, rgba(0,0,0,.25) 100%);
   }
   @media (hover: hover) { .frame:hover img { filter: grayscale(0) contrast(1.02) brightness(1); } }
-  .frame figcaption { padding-top: 10px; color: var(--mute); }
-  /* Legende wie in einem Bildband: Nummern grau, Zuordnung daneben */
-  .studio__legend { display: flex; flex-wrap: wrap; gap: 6px 28px; margin: 18px 0 0; padding-top: 12px; border-top: 1px solid var(--line); }
-  .studio__legend .n { color: var(--mute); margin-right: 12px; }
   .studio.is-offscreen .studio__grain { animation-play-state: paused; }
-  .studio__note a, .cat__credit a { border-bottom: 1px solid #3a3936; padding-bottom: 2px; }
-  .studio__note a:hover, .cat__credit a:hover { color: #fff; border-color: var(--fg); }
-  .studio__note {
-    margin: 26px 0 0; max-width: 46ch;
-    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; font-size: 17px; line-height: 1.45;
-    text-transform: none; letter-spacing: 0;
-  }
   @media (max-width: 900px) {
     .studio__strip {
       grid-template-columns: none; grid-auto-flow: column; grid-auto-columns: 40%;
@@ -529,7 +522,6 @@
   /* Vinyl auf Anfrage: eine schlichte Zeile unter den Tracks */
   .cat__vinyl { margin: 18px 0 0; display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px 24px; }
   .cat__vinyl a { border-bottom: 1px solid #3a3936; padding-bottom: 3px; }
-  .cat__credit { color: var(--mute); }
   .cat__vinyl a:hover { color: #fff; border-color: var(--fg); }
 
   .foot { display: flex; justify-content: space-between; margin-top: 28px; color: var(--mute); }
@@ -726,8 +718,9 @@
     <div class="film" aria-hidden="true"></div>
   </section>
 
+  <div class="cat__head"><span>Tracks</span><span>Tom Sira × <a href="https://iammdlr.com/" target="_blank" rel="noopener">I&nbsp;AM&nbsp;MDLR</a></span></div>
   <div class="cat" id="cat"></div>
-  <p class="cat__vinyl"><a id="vinylLink" href="#vinyl">Tracks on vinyl — on request</a><span class="cat__credit">All tracks made with <a href="https://iammdlr.com/" target="_blank" rel="noopener">I&nbsp;AM&nbsp;MDLR</a></span></p>
+  <p class="cat__vinyl"><a id="vinylLink" href="#vinyl">Tracks on vinyl — on request</a></p>
 
   <section class="sets" id="sets" aria-labelledby="sets-title">
     <div class="sets__head"><span id="sets-title">Sets</span><span>Vinyl · Recorded on location</span></div>
@@ -748,18 +741,16 @@
     </figure>
   </section>
 
-  <!-- Studio: Kontaktabzug, schwarzweiß; Farbe beim Darüberfahren. 01–04 im Studio von I AM MDLR (Luke), 05 anderswo – Ort bewusst nicht genannt. Videos folgen -->
+  <!-- Studio: Kontaktabzug, schwarzweiß; Farbe beim Darüberfahren. Bewusst ohne Beschriftung. Videos folgen -->
   <section class="studio" id="studio" aria-labelledby="studio-title">
-    <div class="sets__head"><span id="studio-title">Studio</span><span>With I&nbsp;AM&nbsp;MDLR</span></div>
+    <div class="sets__head"><span id="studio-title">Studio</span><span>Behind the scenes</span></div>
     <div class="studio__strip">
-      <figure class="frame"><div class="frame__img"><img src="img/studio-1.jpg" width="768" height="1024" loading="lazy" alt="The studio of I AM MDLR: a Soundcraft mixing desk under bare bulbs, synthesizers along the wall, two leather chairs"><span class="studio__grain" aria-hidden="true"></span></div><figcaption>01</figcaption></figure>
-      <figure class="frame"><div class="frame__img"><img src="img/studio-2.jpg" width="768" height="1024" loading="lazy" alt="A session at the synthesizer, seen from behind, under a single bulb"><span class="studio__grain" aria-hidden="true"></span></div><figcaption>02</figcaption></figure>
-      <figure class="frame"><div class="frame__img"><img src="img/studio-3.jpg" width="768" height="1024" loading="lazy" alt="A laptop with an open session resting on the Soundcraft desk, a monitor speaker behind"><span class="studio__grain" aria-hidden="true"></span></div><figcaption>03</figcaption></figure>
-      <figure class="frame"><div class="frame__img"><img src="img/studio-4.jpg" width="768" height="1024" loading="lazy" alt="The mixing desk with a laptop, a speaker and an empty chair"><span class="studio__grain" aria-hidden="true"></span></div><figcaption>04</figcaption></figure>
-      <figure class="frame"><div class="frame__img"><img src="img/studio-5.jpg" width="768" height="1024" loading="lazy" alt="Two turntables beneath a tall window with palm leaves outside, a synthesizer against the wall"><span class="studio__grain" aria-hidden="true"></span></div><figcaption>05</figcaption></figure>
+      <figure class="frame"><div class="frame__img"><img src="img/studio-1.jpg" width="768" height="1024" loading="lazy" alt="The studio of I AM MDLR: a Soundcraft mixing desk under bare bulbs, synthesizers along the wall, two leather chairs"><span class="studio__grain" aria-hidden="true"></span></div></figure>
+      <figure class="frame"><div class="frame__img"><img src="img/studio-2.jpg" width="768" height="1024" loading="lazy" alt="A session at the synthesizer, seen from behind, under a single bulb"><span class="studio__grain" aria-hidden="true"></span></div></figure>
+      <figure class="frame"><div class="frame__img"><img src="img/studio-3.jpg" width="768" height="1024" loading="lazy" alt="A laptop with an open session resting on the Soundcraft desk, a monitor speaker behind"><span class="studio__grain" aria-hidden="true"></span></div></figure>
+      <figure class="frame"><div class="frame__img"><img src="img/studio-4.jpg" width="768" height="1024" loading="lazy" alt="The mixing desk with a laptop, a speaker and an empty chair"><span class="studio__grain" aria-hidden="true"></span></div></figure>
+      <figure class="frame"><div class="frame__img"><img src="img/studio-5.jpg" width="768" height="1024" loading="lazy" alt="Two turntables beneath a tall window with palm leaves outside, a synthesizer against the wall"><span class="studio__grain" aria-hidden="true"></span></div></figure>
     </div>
-    <p class="studio__legend"><span><span class="n">01–04</span>The studio of I&nbsp;AM&nbsp;MDLR</span><span><span class="n">05</span>The decks</span></p>
-    <p class="studio__note">Every track on this page was made in collaboration with <a href="https://iammdlr.com/" target="_blank" rel="noopener">I&nbsp;AM&nbsp;MDLR</a>, in his studio: long sessions at an old Soundcraft desk, analogue synthesizers within reach. Film from the studio follows.</p>
   </section>
 
   <section class="booking" id="booking" role="dialog" aria-modal="true" aria-labelledby="booking-title" aria-hidden="true">
