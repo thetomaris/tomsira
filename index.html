@@ -925,82 +925,9 @@
   </div>
   <audio id="audio" preload="metadata"></audio>
 
+  <script src="tracks.js"></script>
   <script>
-    // Tracks: neuester zuerst. Dateien liegen im Ordner audio/. file: null = noch keine Datei, wird grau angezeigt.
-    // Nummern wie Katalognummern eines Labels: der älteste Track ist 001, jeder neue bekommt die nächste.
-    const TRACKS = [
-      { no: "005", title: "Sundown",                          date: "Nov 10", bpm: 114, file: "audio/sundown.mp3" },
-      { no: "004", title: "Tuned To God 5.0",                 date: "Oct 11", bpm: 118, file: "audio/tuned-to-god-5.mp3" },
-      { no: "003", title: "DRAGAN",                           date: "Sep 12", bpm: 117, file: "audio/dragan.m4a" },
-      { no: "002", title: "Jaguar",                           date: "Jul 12", bpm: 126, file: "audio/jaguar.mp3" },
-      { no: "001", title: "Understand It From Here (slowed)", date: "Jul 04", bpm: 199, file: null }
-    ];
-
-    // ---------- Tastenklicks wie am Plattenspieler: im Browser erzeugt, keine Dateien ----------
-    // press = Start/Stop (schwer, mit Nachfedern), tick = leichte Taste, detent = Pitch rastet bei 0 ein
-    const SFX_LEVEL = 0.5;                 // Gesamtlautstärke der Klicks (0 = aus)
-    const SFX_VOICES = (() => {
-      const noiseFor = new WeakMap();
-      function noise(c) {                  // immer dasselbe Rauschen: jede Taste klingt jedes Mal gleich
-        if (!noiseFor.has(c)) {
-          const b = c.createBuffer(1, Math.floor(c.sampleRate * 0.06), c.sampleRate), d = b.getChannelData(0);
-          for (let i = 0, s = 7; i < d.length; i++) { s = (s * 16807) % 2147483647; d[i] = s / 1073741823.5 - 1; }
-          noiseFor.set(c, b);
-        }
-        return noiseFor.get(c);
-      }
-      function env(c, out, t, gain, decay) {
-        const g = c.createGain();
-        g.gain.setValueAtTime(gain, t);
-        g.gain.exponentialRampToValueAtTime(0.0001, t + decay);
-        g.connect(out);
-        return g;
-      }
-      // kurzer gefilterter Rauschstoß: Kunststoff und Kontakt
-      function burst(c, out, t, freq, q, gain, decay) {
-        const s = c.createBufferSource(), f = c.createBiquadFilter();
-        s.buffer = noise(c); f.type = "bandpass"; f.frequency.value = freq; f.Q.value = q;
-        s.connect(f).connect(env(c, out, t, gain, decay));
-        s.start(t); s.stop(t + decay + 0.01);
-      }
-      // fallender Sinus: das Gewicht der Taste
-      function thump(c, out, t, from, to, gain, decay) {
-        const o = c.createOscillator();
-        o.frequency.setValueAtTime(from, t);
-        o.frequency.exponentialRampToValueAtTime(to, t + decay);
-        o.connect(env(c, out, t, gain, decay));
-        o.start(t); o.stop(t + decay + 0.01);
-      }
-      return {
-        press(c, out, t) {
-          burst(c, out, t, 5200, 0.8, 0.5, 0.005);
-          burst(c, out, t, 1700, 1.4, 1.4, 0.022);
-          thump(c, out, t, 150, 55, 0.5, 0.07);
-          burst(c, out, t + 0.06, 2600, 1.5, 0.35, 0.01);
-        },
-        tick(c, out, t) {
-          burst(c, out, t, 4200, 1.2, 1.5, 0.006);
-          burst(c, out, t, 2000, 2, 1.25, 0.012);
-        },
-        detent(c, out, t) {
-          burst(c, out, t, 1200, 4, 2, 0.012);
-          thump(c, out, t, 320, 200, 0.25, 0.02);
-        }
-      };
-    })();
-    let sfxCtx = null, sfxOut = null;
-    function sfx(name) {
-      const AC = window.AudioContext || window.webkitAudioContext;
-      if (!AC || !SFX_LEVEL) return;
-      try {
-        if (!sfxCtx) { sfxCtx = new AC(); sfxOut = sfxCtx.createGain(); sfxOut.gain.value = SFX_LEVEL; sfxOut.connect(sfxCtx.destination); }
-        if (sfxCtx.state === "suspended") sfxCtx.resume();
-        SFX_VOICES[name](sfxCtx, sfxOut, sfxCtx.currentTime + 0.005);
-      } catch (e) { /* ohne Klick weiter */ }
-    }
-    // Leichte Tasten: Menü, Tracks, Schließen, Absenden, Set-Video, Vinyl-Auswahl
-    const TICK = 'a[href^="#"], .entry, .booking__close, [data-leave], .form__send, .set__poster, .pick input';
-    document.addEventListener("click", e => { if (e.target.closest(TICK)) sfx("tick"); });
+    // Die Trackliste (TRACKS) steht in tracks.js, damit das Release-Skript sie pflegen kann.
 
     // ---------- Katalog ----------
     const cat = document.getElementById("cat");
@@ -1086,7 +1013,6 @@
     function setPitch(v, snap = true) {
       v = Math.max(-8, Math.min(8, Math.round(v * 10) / 10));
       if (snap && Math.abs(v) < 0.6) v = 0;       // Einrasten bei 0 (beim Ziehen)
-      if (v === 0 && pitchValue !== 0) sfx("detent");
       pitchValue = v;
       const rate = 1 + v / 100;
       audio.defaultPlaybackRate = rate;
@@ -1115,12 +1041,22 @@
     audio.addEventListener("loadedmetadata", applyRate);
     load(0, false);
 
-    btn.addEventListener("click", () => {
-      sfx("press");
+    // Start/Stop: Taste im Player oder Leertaste
+    function togglePlay() {
       if (audio.paused) return spinUp();
       if (deckDir < 0) { showPlaying(true); return runDeck(1, 450 * (1 - deck)); }   // während des Auslaufs wieder an
       spinDown();
+    }
+    btn.addEventListener("click", togglePlay);
+    // Leertaste steuert den Player überall, nur nicht beim Tippen in Formularfeldern
+    const typing = el => !!el && (el.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(el.tagName));
+    const isSpace = e => e.code === "Space" || e.key === " ";
+    addEventListener("keydown", e => {
+      if (!isSpace(e) || typing(e.target) || e.ctrlKey || e.metaKey || e.altKey) return;
+      e.preventDefault();               // nicht scrollen und nicht die gerade fokussierte Taste auslösen
+      if (!e.repeat) togglePlay();
     });
+    addEventListener("keyup", e => { if (isSpace(e) && !typing(e.target)) e.preventDefault(); });
     audio.addEventListener("play", () => { document.body.classList.add("is-playing"); btn.setAttribute("aria-label", "Pause"); cat.children[current].classList.add("is-current"); });
     audio.addEventListener("pause", () => { document.body.classList.remove("is-playing"); btn.setAttribute("aria-label", "Play"); });
     audio.addEventListener("timeupdate", () => {
