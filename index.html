@@ -934,7 +934,7 @@
     TRACKS.forEach((t, i) => {
       const b = document.createElement("button");
       b.className = "entry";
-      b.innerHTML = `<span class="entry__no">${t.no}</span><span class="entry__title">${t.title}</span><span class="entry__meta">${t.file ? `${t.bpm} BPM · ${t.date}` : "Soon"}</span>`;
+      b.innerHTML = `<span class="entry__no">${t.no}</span><span class="entry__title">${t.title}</span><span class="entry__meta">${t.file ? [t.bpm && `${t.bpm} BPM`, t.date].filter(Boolean).join(" · ") : "Soon"}</span>`;
       if (t.file) b.addEventListener("click", () => load(i, true));
       else { b.classList.add("is-missing"); b.disabled = true; }
       cat.appendChild(b);
