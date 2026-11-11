@@ -938,11 +938,11 @@
     // Tracks: neuester zuerst. Dateien liegen im Ordner audio/. file: null = noch keine Datei, wird grau angezeigt.
     // Nummern wie Katalognummern eines Labels: der älteste Track ist 001, jeder neue bekommt die nächste.
     const TRACKS = [
-      { no: "005", title: "Sundown",                          date: "Nov 10", key: "C Maj", bpm: 114, file: "audio/sundown.mp3" },
-      { no: "004", title: "Tuned To God 5.0",                 date: "Oct 11", key: "B Min", bpm: 118, file: "audio/tuned-to-god-5.mp3" },
-      { no: "003", title: "DRAGAN",                           date: "Sep 12", key: "G Min", bpm: 117, file: "audio/dragan.m4a" },
-      { no: "002", title: "Jaguar",                           date: "Jul 12", key: "D Min", bpm: 126, file: "audio/jaguar.mp3" },
-      { no: "001", title: "Understand It From Here (slowed)", date: "Jul 04", key: "G Min", bpm: 199, file: null }
+      { no: "005", title: "Sundown",                          date: "Nov 10", bpm: 114, file: "audio/sundown.mp3" },
+      { no: "004", title: "Tuned To God 5.0",                 date: "Oct 11", bpm: 118, file: "audio/tuned-to-god-5.mp3" },
+      { no: "003", title: "DRAGAN",                           date: "Sep 12", bpm: 117, file: "audio/dragan.m4a" },
+      { no: "002", title: "Jaguar",                           date: "Jul 12", bpm: 126, file: "audio/jaguar.mp3" },
+      { no: "001", title: "Understand It From Here (slowed)", date: "Jul 04", bpm: 199, file: null }
     ];
 
     // ---------- Tastenklicks wie am Plattenspieler: im Browser erzeugt, keine Dateien ----------
@@ -1016,7 +1016,7 @@
     TRACKS.forEach((t, i) => {
       const b = document.createElement("button");
       b.className = "entry";
-      b.innerHTML = `<span class="entry__no">${t.no}</span><span class="entry__title">${t.title}</span><span class="entry__meta">${t.file ? `${t.key} · ${t.bpm} BPM · ${t.date}` : "Soon"}</span>`;
+      b.innerHTML = `<span class="entry__no">${t.no}</span><span class="entry__title">${t.title}</span><span class="entry__meta">${t.file ? `${t.bpm} BPM · ${t.date}` : "Soon"}</span>`;
       if (t.file) b.addEventListener("click", () => load(i, true));
       else { b.classList.add("is-missing"); b.disabled = true; }
       cat.appendChild(b);
